@@ -160,38 +160,27 @@ export default function Sidebar({
               )}
             </>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem' }}>
-              <div 
-                title="Project Evaluator (Click to pin open)"
-                onClick={handlePin}
-                style={{ 
-                  cursor: 'pointer',
-                  fontWeight: 800,
-                  fontSize: '0.85rem',
-                  letterSpacing: '0.04em',
-                  color: 'var(--color-text-main)',
-                  backgroundColor: 'var(--color-surface-subtle)',
-                  border: '1px solid var(--color-border-light)',
-                  borderRadius: 'var(--radius-md)',
-                  width: '36px',
-                  height: '36px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  userSelect: 'none'
-                }}
-              >
-                PE
-              </div>
-              <button
-                type="button"
-                onClick={handlePin}
-                className="sidebar-collapse-btn"
-                title="Pin sidebar open"
-                aria-label="Pin sidebar open"
-              >
-                <IconPin size={14} />
-              </button>
+            <div 
+              title="Project Evaluator (Click to pin open)"
+              onClick={handlePin}
+              style={{ 
+                cursor: 'pointer',
+                fontWeight: 800,
+                fontSize: '0.85rem',
+                letterSpacing: '0.04em',
+                color: 'var(--color-text-main)',
+                backgroundColor: 'var(--color-surface-subtle)',
+                border: '1px solid var(--color-border-light)',
+                borderRadius: 'var(--radius-md)',
+                width: '36px',
+                height: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                userSelect: 'none'
+              }}
+            >
+              PE
             </div>
           )}
         </div>
@@ -221,25 +210,7 @@ export default function Sidebar({
                       <IconFolder size={18} />
                     </span>
                     {isExpanded && (
-                      <>
-                        <span style={{ whiteSpace: 'nowrap' }}>Projects</span>
-                        {projectsCount > 0 && (
-                          <span 
-                            style={{
-                              marginLeft: 'auto',
-                              fontSize: '0.72rem',
-                              fontWeight: 700,
-                              backgroundColor: 'var(--color-surface-subtle)',
-                              color: 'var(--color-primary-hover)',
-                              padding: '1px 7px',
-                              borderRadius: '9999px',
-                              border: '1px solid var(--color-surface-subtle-border)'
-                            }}
-                          >
-                            {projectsCount}
-                          </span>
-                        )}
-                      </>
+                      <span style={{ whiteSpace: 'nowrap' }}>Projects</span>
                     )}
                   </button>
                 </li>
@@ -253,47 +224,14 @@ export default function Sidebar({
                     style={{
                       justifyContent: isExpanded ? 'flex-start' : 'center',
                       padding: isExpanded ? '0.625rem 0.75rem' : '0.65rem 0',
-                      width: '100%',
-                      position: 'relative'
+                      width: '100%'
                     }}
                   >
                     <span className="nav-icon">
                       <IconFileCheck size={18} />
                     </span>
-                    {isExpanded ? (
-                      <>
-                        <span style={{ whiteSpace: 'nowrap' }}>Submissions</span>
-                        {submissionsCount > 0 && (
-                          <span 
-                            style={{
-                              marginLeft: 'auto',
-                              fontSize: '0.72rem',
-                              fontWeight: 700,
-                              backgroundColor: 'var(--color-surface-subtle)',
-                              color: 'var(--color-primary-hover)',
-                              padding: '1px 7px',
-                              borderRadius: '9999px',
-                              border: '1px solid var(--color-surface-subtle-border)'
-                            }}
-                          >
-                            {submissionsCount}
-                          </span>
-                        )}
-                      </>
-                    ) : (
-                      submissionsCount > 0 && (
-                        <span 
-                          style={{
-                            position: 'absolute',
-                            top: '6px',
-                            right: '12px',
-                            width: '7px',
-                            height: '7px',
-                            borderRadius: '50%',
-                            backgroundColor: 'var(--color-primary)'
-                          }}
-                        />
-                      )
+                    {isExpanded && (
+                      <span style={{ whiteSpace: 'nowrap' }}>Submissions</span>
                     )}
                   </button>
                 </li>
@@ -320,25 +258,7 @@ export default function Sidebar({
                       <IconFolder size={18} />
                     </span>
                     {isExpanded && (
-                      <>
-                        <span style={{ whiteSpace: 'nowrap' }}>Projects</span>
-                        {projectsCount > 0 && (
-                          <span 
-                            style={{
-                              marginLeft: 'auto',
-                              fontSize: '0.72rem',
-                              fontWeight: 700,
-                              backgroundColor: 'var(--color-surface-subtle)',
-                              color: 'var(--color-primary-hover)',
-                              padding: '1px 7px',
-                              borderRadius: '9999px',
-                              border: '1px solid var(--color-surface-subtle-border)'
-                            }}
-                          >
-                            {projectsCount}
-                          </span>
-                        )}
-                      </>
+                      <span style={{ whiteSpace: 'nowrap' }}>Projects</span>
                     )}
                   </button>
                 </li>
@@ -352,47 +272,14 @@ export default function Sidebar({
                     style={{
                       justifyContent: isExpanded ? 'flex-start' : 'center',
                       padding: isExpanded ? '0.625rem 0.75rem' : '0.65rem 0',
-                      width: '100%',
-                      position: 'relative'
+                      width: '100%'
                     }}
                   >
                     <span className="nav-icon">
                       <IconFileCheck size={18} />
                     </span>
-                    {isExpanded ? (
-                      <>
-                        <span style={{ whiteSpace: 'nowrap' }}>Submissions</span>
-                        {submissionsCount > 0 && (
-                          <span 
-                            style={{
-                              marginLeft: 'auto',
-                              fontSize: '0.72rem',
-                              fontWeight: 700,
-                              backgroundColor: 'var(--color-surface-subtle)',
-                              color: 'var(--color-primary-hover)',
-                              padding: '1px 7px',
-                              borderRadius: '9999px',
-                              border: '1px solid var(--color-surface-subtle-border)'
-                            }}
-                          >
-                            {submissionsCount}
-                          </span>
-                        )}
-                      </>
-                    ) : (
-                      submissionsCount > 0 && (
-                        <span 
-                          style={{
-                            position: 'absolute',
-                            top: '6px',
-                            right: '12px',
-                            width: '7px',
-                            height: '7px',
-                            borderRadius: '50%',
-                            backgroundColor: 'var(--color-primary)'
-                          }}
-                        />
-                      )
+                    {isExpanded && (
+                      <span style={{ whiteSpace: 'nowrap' }}>Submissions</span>
                     )}
                   </button>
                 </li>

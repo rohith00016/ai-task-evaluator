@@ -1,28 +1,28 @@
 import { useState, useEffect } from 'react';
-import { 
-  IconClose, 
-  IconSparkles, 
-  IconPlus, 
-  IconTrash, 
-  IconBookOpen, 
-  IconCheck, 
+import {
+  IconClose,
+  IconSparkles,
+  IconPlus,
+  IconTrash,
+  IconBookOpen,
+  IconCheck,
   IconRefreshCw,
   IconFileCheck
 } from './Icons';
-import { 
-  generateDeliverablesFromPRD, 
-  formatDocumentationWithAI, 
+import {
+  generateDeliverablesFromPRD,
+  formatDocumentationWithAI,
   generateCriteriaFromPRD,
-  getProjectPRDMarkdown 
+  getProjectPRDMarkdown
 } from '../services/api';
 import MarkdownViewer from './MarkdownViewer';
 import { useToast } from '../context/UIContext';
 
-export default function CreateProjectModal({ 
-  isOpen, 
-  onClose, 
-  onSaveProject, 
-  project = null 
+export default function CreateProjectModal({
+  isOpen,
+  onClose,
+  onSaveProject,
+  project = null
 }) {
   const { showToast } = useToast();
   const isEditMode = !!project;
@@ -32,7 +32,7 @@ export default function CreateProjectModal({
   const [prdMarkdown, setPrdMarkdown] = useState('');
   const [deliverables, setDeliverables] = useState([]);
   const [criteria, setCriteria] = useState([]);
-  
+
   // Deliverable editing state
   const [editingIdx, setEditingIdx] = useState(null);
   const [editText, setEditText] = useState('');
@@ -387,20 +387,20 @@ Provide clean commit history, a complete README with setup commands, and an .env
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div 
-        className="modal-content" 
-        onClick={(e) => e.stopPropagation()} 
+      <div
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()}
         style={{ maxWidth: '1080px', width: '95vw', height: '92vh', display: 'flex', flexDirection: 'column' }}
       >
         {/* Header & Step Indicator */}
         <div className="modal-header" style={{ padding: '1.15rem 1.75rem', borderBottom: '1px solid var(--color-border)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-            <div 
-              style={{ 
-                width: '36px', 
-                height: '36px', 
-                borderRadius: 'var(--radius-md)', 
-                backgroundColor: 'var(--color-surface-subtle)', 
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: 'var(--color-surface-subtle)',
                 color: 'var(--color-primary-hover)',
                 display: 'flex',
                 alignItems: 'center',
@@ -415,11 +415,11 @@ Provide clean commit history, a complete README with setup commands, and an .env
                 {isEditMode ? 'Edit Project & PRD Studio' : 'Create Evaluation Project'}
               </h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '3px' }}>
-                <span 
+                <span
                   onClick={() => setStep(1)}
-                  style={{ 
-                    fontSize: '0.78rem', 
-                    fontWeight: step === 1 ? 800 : 600, 
+                  style={{
+                    fontSize: '0.78rem',
+                    fontWeight: step === 1 ? 800 : 600,
                     color: step === 1 ? 'var(--color-primary-hover)' : 'var(--color-text-muted)',
                     display: 'flex',
                     alignItems: 'center',
@@ -432,13 +432,13 @@ Provide clean commit history, a complete README with setup commands, and an .env
                   PRD Documentation
                 </span>
                 <span style={{ color: 'var(--color-text-light)' }}>→</span>
-                <span 
+                <span
                   onClick={() => {
                     if (title.trim() && prdMarkdown.trim()) setStep(2);
                   }}
-                  style={{ 
-                    fontSize: '0.78rem', 
-                    fontWeight: step === 2 ? 800 : 600, 
+                  style={{
+                    fontSize: '0.78rem',
+                    fontWeight: step === 2 ? 800 : 600,
                     color: step === 2 ? 'var(--color-primary-hover)' : 'var(--color-text-muted)',
                     display: 'flex',
                     alignItems: 'center',
@@ -451,13 +451,13 @@ Provide clean commit history, a complete README with setup commands, and an .env
                   Deliverables Checklist {deliverables.length > 0 ? `(${deliverables.length})` : ''}
                 </span>
                 <span style={{ color: 'var(--color-text-light)' }}>→</span>
-                <span 
+                <span
                   onClick={() => {
                     if (deliverables.length > 0) setStep(3);
                   }}
-                  style={{ 
-                    fontSize: '0.78rem', 
-                    fontWeight: step === 3 ? 800 : 600, 
+                  style={{
+                    fontSize: '0.78rem',
+                    fontWeight: step === 3 ? 800 : 600,
                     color: step === 3 ? 'var(--color-primary-hover)' : 'var(--color-text-muted)',
                     display: 'flex',
                     alignItems: 'center',
@@ -473,10 +473,10 @@ Provide clean commit history, a complete README with setup commands, and an .env
             </div>
           </div>
 
-          <button 
-            type="button" 
-            onClick={onClose} 
-            className="btn btn-secondary btn-sm" 
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn btn-secondary btn-sm"
             style={{ padding: '4px', border: 'none' }}
           >
             <IconClose size={20} />
@@ -486,7 +486,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
         {/* STEP 1: PRD DOCUMENTATION STUDIO */}
         {step === 1 && (
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflow: 'hidden' }}>
-            
+
             {/* Title & Domain Row */}
             <div style={{ padding: '0.85rem 1.75rem', backgroundColor: '#ffffff', borderBottom: '1px solid var(--color-border)', display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(200px, 1fr)', gap: '1rem' }}>
               <div>
@@ -516,13 +516,13 @@ Provide clean commit history, a complete README with setup commands, and an .env
             </div>
 
             {/* PRD Studio Toolbar */}
-            <div 
-              style={{ 
-                padding: '0.55rem 1.75rem', 
-                backgroundColor: '#f8fafc', 
-                borderBottom: '1px solid var(--color-border)', 
-                display: 'flex', 
-                alignItems: 'center', 
+            <div
+              style={{
+                padding: '0.55rem 1.75rem',
+                backgroundColor: '#f8fafc',
+                borderBottom: '1px solid var(--color-border)',
+                display: 'flex',
+                alignItems: 'center',
                 justifyContent: 'space-between',
                 flexWrap: 'wrap',
                 gap: '0.75rem'
@@ -575,7 +575,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
 
             {/* Formatting confirmation banner */}
             {formatStats && (
-              <div 
+              <div
                 style={{
                   backgroundColor: 'var(--color-surface-subtle)',
                   borderBottom: '1px solid var(--color-surface-subtle-border)',
@@ -595,7 +595,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
 
             {/* Split Screen Workspace: Editor Left, Preview Right */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', flex: 1, minHeight: 0, overflow: 'hidden' }}>
-              
+
               {/* Left Column: Raw Text Editor */}
               <div style={{ display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--color-border)', backgroundColor: '#ffffff', overflow: 'hidden' }}>
                 <div style={{ padding: '0.45rem 1rem', backgroundColor: '#f8fafc', borderBottom: '1px solid var(--color-border)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)' }}>
@@ -639,9 +639,9 @@ Provide clean commit history, a complete README with setup commands, and an .env
               <button type="button" onClick={onClose} className="btn btn-secondary">
                 Cancel
               </button>
-              <button 
-                type="button" 
-                onClick={handleProceedToDeliverables} 
+              <button
+                type="button"
+                onClick={handleProceedToDeliverables}
                 className="btn btn-primary"
                 disabled={isGeneratingDeliverables || !title.trim() || !prdMarkdown.trim()}
               >
@@ -653,8 +653,8 @@ Provide clean commit history, a complete README with setup commands, and an .env
                 ) : (
                   <>
                     <span>
-                      {deliverables.length > 0 
-                        ? `Continue to Deliverables Checklist (${deliverables.length}) →` 
+                      {deliverables.length > 0
+                        ? `Continue to Deliverables Checklist (${deliverables.length}) →`
                         : 'Continue to Deliverables Checklist →'
                       }
                     </span>
@@ -668,12 +668,12 @@ Provide clean commit history, a complete README with setup commands, and an .env
         {/* STEP 2: AI DELIVERABLES REVIEW & CONFIRMATION */}
         {step === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflow: 'hidden' }}>
-            
+
             {/* Top Review Callout */}
-            <div 
-              style={{ 
-                padding: '1rem 1.75rem', 
-                backgroundColor: 'var(--color-surface-subtle)', 
+            <div
+              style={{
+                padding: '1rem 1.75rem',
+                backgroundColor: 'var(--color-surface-subtle)',
                 borderBottom: '1px solid var(--color-surface-subtle-border)',
                 display: 'flex',
                 alignItems: 'center',
@@ -704,7 +704,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
                 title="Re-analyze the PRD with Gemini AI to generate new deliverables"
               >
                 <IconRefreshCw size={13} />
-                <span>{isGeneratingDeliverables ? 'Re-analyzing...' : '🔄 Retry / Regenerate with AI'}</span>
+                <span>{isGeneratingDeliverables ? 'Re-analyzing...' : 'Retry / Regenerate with AI'}</span>
               </button>
             </div>
 
@@ -720,7 +720,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
               </div>
 
               {deliverables.map((item, idx) => (
-                <div 
+                <div
                   key={idx}
                   style={{
                     display: 'flex',
@@ -733,13 +733,13 @@ Provide clean commit history, a complete README with setup commands, and an .env
                     transition: 'var(--transition-fast)'
                   }}
                 >
-                  <span 
-                    style={{ 
-                      fontSize: '0.75rem', 
-                      fontWeight: 800, 
-                      color: 'var(--color-primary-hover)', 
-                      backgroundColor: 'var(--color-surface-subtle)', 
-                      padding: '2px 7px', 
+                  <span
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 800,
+                      color: 'var(--color-primary-hover)',
+                      backgroundColor: 'var(--color-surface-subtle)',
+                      padding: '2px 7px',
                       borderRadius: '4px',
                       minWidth: '26px',
                       textAlign: 'center'
@@ -840,16 +840,16 @@ Provide clean commit history, a complete README with setup commands, and an .env
 
             {/* Step 2 Footer */}
             <div className="modal-footer" style={{ padding: '0.85rem 1.75rem', borderTop: '1px solid var(--color-border)' }}>
-              <button 
-                type="button" 
-                onClick={() => setStep(1)} 
+              <button
+                type="button"
+                onClick={() => setStep(1)}
                 className="btn btn-secondary"
               >
                 ← Back to PRD Documentation
               </button>
-              <button 
-                type="button" 
-                onClick={handleProceedToCriteria} 
+              <button
+                type="button"
+                onClick={handleProceedToCriteria}
                 className="btn btn-primary"
                 id="btn-proceed-to-criteria"
                 disabled={isGeneratingCriteria || deliverables.length === 0}
@@ -873,12 +873,12 @@ Provide clean commit history, a complete README with setup commands, and an .env
         {/* STEP 3: AI EVALUATION CRITERIA & SCORING PILLARS */}
         {step === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflow: 'hidden' }}>
-            
+
             {/* Top Review Callout */}
-            <div 
-              style={{ 
-                padding: '1rem 1.75rem', 
-                backgroundColor: 'var(--color-surface-subtle)', 
+            <div
+              style={{
+                padding: '1rem 1.75rem',
+                backgroundColor: 'var(--color-surface-subtle)',
                 borderBottom: '1px solid var(--color-surface-subtle-border)',
                 display: 'flex',
                 alignItems: 'center',
@@ -909,7 +909,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
                 title="Re-analyze the PRD with Gemini AI to generate fresh criteria pillars"
               >
                 <IconRefreshCw size={13} />
-                <span>{isGeneratingCriteria ? 'Re-analyzing...' : '🔄 Retry / Regenerate with AI'}</span>
+                <span>{isGeneratingCriteria ? 'Re-analyzing...' : 'Retry / Regenerate with AI'}</span>
               </button>
             </div>
 
@@ -918,7 +918,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
               const total = criteria.reduce((sum, c) => sum + (Number(c.maxScore) || 0), 0);
               const is100 = total === 100;
               return (
-                <div 
+                <div
                   style={{
                     padding: '0.55rem 1.75rem',
                     backgroundColor: is100 ? '#f0fdf4' : '#fffbeb',
@@ -933,7 +933,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', fontWeight: 700, color: is100 ? '#15803d' : '#b45309' }}>
                     <IconCheck size={15} style={{ color: is100 ? '#15803d' : '#b45309' }} />
                     <span>
-                      {is100 
+                      {is100
                         ? 'Total Scoring Weightage: Exactly 100 / 100 points (Recommended for grading)'
                         : `Total Scoring Weightage: ${total} / 100 points (Criteria should ideally sum to 100)`}
                     </span>
@@ -966,7 +966,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
               </div>
 
               {criteria.map((item, idx) => (
-                <div 
+                <div
                   key={idx}
                   style={{
                     display: 'flex',
@@ -979,13 +979,13 @@ Provide clean commit history, a complete README with setup commands, and an .env
                     transition: 'var(--transition-fast)'
                   }}
                 >
-                  <span 
-                    style={{ 
-                      fontSize: '0.75rem', 
-                      fontWeight: 800, 
-                      color: 'var(--color-primary-hover)', 
-                      backgroundColor: 'var(--color-surface-subtle)', 
-                      padding: '2px 7px', 
+                  <span
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 800,
+                      color: 'var(--color-primary-hover)',
+                      backgroundColor: 'var(--color-surface-subtle)',
+                      padding: '2px 7px',
                       borderRadius: '4px',
                       minWidth: '26px',
                       textAlign: 'center'
@@ -1040,13 +1040,13 @@ Provide clean commit history, a complete README with setup commands, and an .env
                         <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--color-text-main)' }}>
                           {item.name}
                         </span>
-                        <span 
-                          style={{ 
-                            fontSize: '0.75rem', 
-                            fontWeight: 800, 
-                            color: '#15803d', 
-                            backgroundColor: '#dcfce7', 
-                            padding: '2px 8px', 
+                        <span
+                          style={{
+                            fontSize: '0.75rem',
+                            fontWeight: 800,
+                            color: '#15803d',
+                            backgroundColor: '#dcfce7',
+                            padding: '2px 8px',
                             borderRadius: '9999px',
                             border: '1px solid #bbf7d0'
                           }}
@@ -1124,16 +1124,16 @@ Provide clean commit history, a complete README with setup commands, and an .env
 
             {/* Step 3 Footer */}
             <div className="modal-footer" style={{ padding: '0.85rem 1.75rem', borderTop: '1px solid var(--color-border)' }}>
-              <button 
-                type="button" 
-                onClick={() => setStep(2)} 
+              <button
+                type="button"
+                onClick={() => setStep(2)}
                 className="btn btn-secondary"
               >
                 ← Back to Deliverables
               </button>
-              <button 
-                type="button" 
-                onClick={handlePublishProject} 
+              <button
+                type="button"
+                onClick={handlePublishProject}
                 className="btn btn-primary"
                 id="btn-confirm-publish-project"
                 disabled={criteria.length === 0}
