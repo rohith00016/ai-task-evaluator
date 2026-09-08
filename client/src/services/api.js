@@ -2,17 +2,18 @@
  * Central API client for interacting with the Node.js Express & MongoDB backend.
  */
 
-const BASE_URL = '/api';
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
+
 
 async function request(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
-  
+
   const token = localStorage.getItem('evaluator_token');
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers
   };
-  
+
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
