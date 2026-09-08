@@ -12,19 +12,23 @@ export default function ProtectedRoute({ allowedRoles, children }) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: '70vh',
-        color: 'var(--color-text-muted)'
+        width: '100%',
+        flex: 1,
+        minHeight: '100vh',
+        backgroundColor: 'var(--color-bg, #f8fafc)',
+        color: 'var(--color-text-muted, #64748b)'
       }}>
         <div 
           className="spinner" 
           style={{ 
-            width: '32px', 
-            height: '32px', 
-            borderTopColor: 'var(--color-primary)', 
+            width: '36px', 
+            height: '36px', 
+            borderWidth: '3px',
+            borderTopColor: 'var(--color-primary, #16a34a)', 
             marginBottom: '1rem' 
           }} 
         />
-        <p style={{ fontWeight: 600, fontSize: '0.9rem' }}>Verifying authentication...</p>
+        <p style={{ fontWeight: 600, fontSize: '0.92rem', letterSpacing: '-0.01em' }}>Verifying authentication...</p>
       </div>
     );
   }
