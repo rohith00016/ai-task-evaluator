@@ -11,9 +11,9 @@ import {
 
 import { useAuth } from '../context/AuthContext';
 import { useSubmitEvaluationMutation } from '../hooks/useSubmissionsQuery';
+import { useProject } from '../hooks/useProjectsQuery';
 import { useUI, useToast } from '../context/UIContext';
 import MarkdownViewer from '../components/MarkdownViewer';
-import { getProjectPRDMarkdown, fetchProjectById } from '../services/api';
 
 export default function ProjectDetailSubmissionView({ 
   project: propProject, 
@@ -30,49 +30,28 @@ export default function ProjectDetailSubmissionView({
   const { startEvaluation, setEvalStage, setEvalProgress, stopEvaluation } = useUI();
   const { showToast } = useToast();
 
-  const [fetchedProject, setFetchedProject] = useState(null);
-  const [loading, setLoading] = useState(false);
-
   // Check if project exists in passed props for instant rendering
   const matchingProp = (propProject && (propProject.id === id || propProject._id === id))
     ? propProject
     : projects.find((p) => p.id === id || p._id === id);
+
+  // Authenticated React Query hook: loads project details by ID with caching & background revalidation
+  const { 
+    data: fetchedProject, 
+    isLoading: isProjectLoading 
+  } = useProject(id, {
+    initialData: matchingProp
+  });
+
+  const project = fetchedProject || matchingProp;
+  const loading = isProjectLoading && !project;
 
   useEffect(() => {
     // Reset form states on id change
     setRepoUrl('');
     setNotes('');
     setSubmissionError(null);
-
-    if (!id) return;
-
-    let isMounted = true;
-
-    // If not in cache/props, show loading indicator
-    if (!matchingProp) {
-      setLoading(true);
-    }
-
-    // Always fetch latest project document from MongoDB
-    fetchProjectById(id)
-      .then((data) => {
-        if (isMounted && data) {
-          setFetchedProject(data);
-        }
-      })
-      .catch((err) => {
-        console.error('Error fetching latest project details:', err);
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
   }, [id]);
-
-  const project = fetchedProject || matchingProp;
   const handleBack = () => {
     if (onBack) {
       onBack();

@@ -10,7 +10,8 @@ import {
   IconBookOpen,
   IconEdit 
 } from '../components/Icons';
-import { useProjects, useDeleteProjectMutation } from '../hooks/useProjectsQuery';
+import { useQueryClient } from '@tanstack/react-query';
+import { useProjects, useDeleteProjectMutation, PROJECT_KEYS } from '../hooks/useProjectsQuery';
 import { useSubmissions } from '../hooks/useSubmissionsQuery';
 import { useModals, useToast } from '../context/UIContext';
 import { fetchProjectById } from '../services/api';
@@ -28,6 +29,7 @@ export default function LearnerBrowseView({
   onSelectCourse
 }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const isAdmin = mode === 'admin';
 
   // React Query hooks for autonomous state
@@ -54,8 +56,12 @@ export default function LearnerBrowseView({
 
   const handleEdit = onEditProjectPRD || (async (proj) => {
     openCreateProject(proj);
+    const targetId = proj.id || proj._id;
     try {
-      const fullProj = await fetchProjectById(proj.id || proj._id);
+      const fullProj = await queryClient.fetchQuery({
+        queryKey: PROJECT_KEYS.detail(targetId),
+        queryFn: () => fetchProjectById(targetId)
+      });
       if (fullProj) {
         openCreateProject(fullProj);
       }
