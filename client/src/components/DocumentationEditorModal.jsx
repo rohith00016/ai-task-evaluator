@@ -9,6 +9,7 @@ import {
 } from './Icons';
 import MarkdownViewer from './MarkdownViewer';
 import { formatDocumentationWithAI, generateDeliverablesFromPRD, generateCriteriaFromPRD } from '../services/api';
+import { useToast } from '../context/UIContext';
 
 export default function DocumentationEditorModal({ 
   isOpen, 
@@ -17,6 +18,7 @@ export default function DocumentationEditorModal({
   projectTitle = '', 
   onApplyDocumentation 
 }) {
+  const { showToast } = useToast();
   const [content, setContent] = useState(initialMarkdown || '');
   const [isFormatting, setIsFormatting] = useState(false);
   const [formatStats, setFormatStats] = useState(null);
@@ -65,7 +67,7 @@ export default function DocumentationEditorModal({
 
   const handleAIFormat = async () => {
     if (!content.trim()) {
-      alert('Please paste or write some raw documentation content first.');
+      showToast('Please paste or write some raw documentation content first.', 'error');
       return;
     }
 
@@ -76,7 +78,7 @@ export default function DocumentationEditorModal({
       setFormatStats(result.stats);
     } catch (err) {
       console.error('Formatting failed:', err);
-      alert(`AI Formatting Error: ${err.message || 'Gemini formatting failed. Please retry.'}`);
+      showToast(`AI Formatting Error: ${err.message || 'Gemini formatting failed. Please retry.'}`, 'error');
     } finally {
       setIsFormatting(false);
     }
@@ -118,7 +120,7 @@ include docker-compose with timescaledb and provide mock data generator script i
 
   const handleRefreshDeliverables = async () => {
     if (!content.trim()) {
-      alert('Please enter or paste PRD content first.');
+      showToast('Please enter or paste PRD content first.', 'error');
       return;
     }
 
@@ -129,7 +131,7 @@ include docker-compose with timescaledb and provide mock data generator script i
       setSyncDeliverables(true);
     } catch (err) {
       console.error('Deliverable extraction failed:', err);
-      alert(`Deliverable Extraction Error: ${err.message || 'Gemini could not parse the PRD.'}`);
+      showToast(`Deliverable Extraction Error: ${err.message || 'Gemini could not parse the PRD.'}`, 'error');
     } finally {
       setIsRefreshingDeliverables(false);
     }
@@ -137,7 +139,7 @@ include docker-compose with timescaledb and provide mock data generator script i
 
   const handleRefreshCriteria = async () => {
     if (!content.trim()) {
-      alert('Please enter or paste PRD content first.');
+      showToast('Please enter or paste PRD content first.', 'error');
       return;
     }
 
@@ -148,7 +150,7 @@ include docker-compose with timescaledb and provide mock data generator script i
       setSyncCriteria(true);
     } catch (err) {
       console.error('Criteria extraction failed:', err);
-      alert(`Criteria Extraction Error: ${err.message || 'Gemini could not generate criteria.'}`);
+      showToast(`Criteria Extraction Error: ${err.message || 'Gemini could not generate criteria.'}`, 'error');
     } finally {
       setIsRefreshingCriteria(false);
     }

@@ -37,7 +37,7 @@ export default function AppLayout() {
       closeCreateProject();
     } catch (err) {
       console.error('Failed to save project:', err);
-      alert(`Save Project Error: ${err.message}`);
+      showToast(`Save Project Error: ${err.message}`, 'error');
     }
   };
 

@@ -48,7 +48,7 @@ export default function LearnerBrowseView({
       showToast('Project deleted from database', 'info');
     } catch (err) {
       console.error('Failed to delete project:', err);
-      alert(`Delete Error: ${err.message}`);
+      showToast(`Delete Error: ${err.message}`, 'error');
     }
   });
 

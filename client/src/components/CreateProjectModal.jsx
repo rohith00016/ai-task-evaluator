@@ -16,6 +16,7 @@ import {
   getProjectPRDMarkdown 
 } from '../services/api';
 import MarkdownViewer from './MarkdownViewer';
+import { useToast } from '../context/UIContext';
 
 export default function CreateProjectModal({ 
   isOpen, 
@@ -23,6 +24,7 @@ export default function CreateProjectModal({
   onSaveProject, 
   project = null 
 }) {
+  const { showToast } = useToast();
   const isEditMode = !!project;
   const [step, setStep] = useState(1); // 1: PRD Documentation, 2: Deliverables Checklist, 3: Evaluation Criteria
   const [title, setTitle] = useState('');
@@ -158,7 +160,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
 
   const handleAIFormat = async () => {
     if (!prdMarkdown.trim()) {
-      alert('Please enter or paste raw documentation text first.');
+      showToast('Please enter or paste raw documentation text first.', 'error');
       return;
     }
 
@@ -169,7 +171,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
       setFormatStats(result.stats);
     } catch (err) {
       console.error('AI formatting failed:', err);
-      alert(`AI Formatting Error: ${err.message || 'Formatting failed. Please retry.'}`);
+      showToast(`AI Formatting Error: ${err.message || 'Formatting failed. Please retry.'}`, 'error');
     } finally {
       setIsFormatting(false);
     }
@@ -177,12 +179,12 @@ Provide clean commit history, a complete README with setup commands, and an .env
 
   const handleProceedToDeliverables = async () => {
     if (!title.trim()) {
-      alert('Please provide a Project Title before proceeding.');
+      showToast('Please provide a Project Title before proceeding.', 'error');
       return;
     }
 
     if (!prdMarkdown.trim()) {
-      alert('Please write or paste the PRD Documentation before continuing.');
+      showToast('Please write or paste the PRD Documentation before continuing.', 'error');
       return;
     }
 
@@ -199,7 +201,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
       setStep(2);
     } catch (err) {
       console.error('Deliverable generation failed:', err);
-      alert(`Deliverable Extraction Error: ${err.message || 'Gemini could not parse the PRD. Please retry.'}`);
+      showToast(`Deliverable Extraction Error: ${err.message || 'Gemini could not parse the PRD. Please retry.'}`, 'error');
     } finally {
       setIsGeneratingDeliverables(false);
     }
@@ -212,7 +214,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
       setDeliverables(generated);
     } catch (err) {
       console.error('Regeneration failed:', err);
-      alert(`Regeneration Error: ${err.message || 'Please retry.'}`);
+      showToast(`Regeneration Error: ${err.message || 'Please retry.'}`, 'error');
     } finally {
       setIsGeneratingDeliverables(false);
     }
@@ -248,7 +250,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
   // Step 2 -> Step 3: Transition & Criteria Generation
   const handleProceedToCriteria = async () => {
     if (deliverables.length === 0) {
-      alert('Please have at least 1 deliverable in the checklist before proceeding.');
+      showToast('Please have at least 1 deliverable in the checklist before proceeding.', 'error');
       return;
     }
 
@@ -264,7 +266,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
       setStep(3);
     } catch (err) {
       console.error('Criteria generation failed:', err);
-      alert(`Criteria Generation Error: ${err.message || 'Gemini could not generate criteria. Please retry.'}`);
+      showToast(`Criteria Generation Error: ${err.message || 'Gemini could not generate criteria. Please retry.'}`, 'error');
     } finally {
       setIsGeneratingCriteria(false);
     }
@@ -277,7 +279,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
       setCriteria(generated);
     } catch (err) {
       console.error('Criteria regeneration failed:', err);
-      alert(`Regeneration Error: ${err.message || 'Please retry.'}`);
+      showToast(`Regeneration Error: ${err.message || 'Please retry.'}`, 'error');
     } finally {
       setIsGeneratingCriteria(false);
     }
@@ -307,7 +309,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
 
   const handleDeleteCrit = (idx) => {
     if (criteria.length <= 1) {
-      alert('You must keep at least 1 evaluation criterion pillar.');
+      showToast('You must keep at least 1 evaluation criterion pillar.', 'error');
       return;
     }
     setCriteria(criteria.filter((_, i) => i !== idx));
@@ -340,17 +342,17 @@ Provide clean commit history, a complete README with setup commands, and an .env
 
   const handlePublishProject = () => {
     if (!title.trim()) {
-      alert('Please enter a Project Title.');
+      showToast('Please enter a Project Title.', 'error');
       return;
     }
 
     if (deliverables.length === 0) {
-      alert('Please have at least 1 deliverable in the checklist.');
+      showToast('Please have at least 1 deliverable in the checklist.', 'error');
       return;
     }
 
     if (criteria.length === 0) {
-      alert('Please configure at least 1 evaluation criterion pillar.');
+      showToast('Please configure at least 1 evaluation criterion pillar.', 'error');
       return;
     }
 
