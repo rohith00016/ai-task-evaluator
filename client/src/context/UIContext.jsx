@@ -59,10 +59,22 @@ export function UIProvider({ children }) {
     setIsEvaluating(false);
   }, []);
 
+  // Mobile navigation drawer
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const openMobileSidebar = useCallback(() => setIsMobileSidebarOpen(true), []);
+  const closeMobileSidebar = useCallback(() => setIsMobileSidebarOpen(false), []);
+  const toggleMobileSidebar = useCallback(() => setIsMobileSidebarOpen((prev) => !prev), []);
+
   const value = {
     // Toast
     toast,
     showToast,
+
+    // Mobile sidebar
+    isMobileSidebarOpen,
+    openMobileSidebar,
+    closeMobileSidebar,
+    toggleMobileSidebar,
 
     // Create / Edit Project Modal
     isCreateModalOpen,

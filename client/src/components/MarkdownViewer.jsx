@@ -59,7 +59,7 @@ export default function MarkdownViewer({ content = '' }) {
       const dataRows = tableRows.slice(1).filter((r) => !r.every((cell) => cell.includes('---') || cell.includes(':-')));
 
       renderedElements.push(
-        <div key={`table-${renderedElements.length}`} className="table-container" style={{ margin: '1.25rem 0', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--color-border)' }}>
+        <div key={`table-${renderedElements.length}`} className="table-container" style={{ margin: '1.25rem 0', borderRadius: 'var(--radius-md)', overflowX: 'auto', border: '1px solid var(--color-border)' }}>
           <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ backgroundColor: '#f8fafc' }}>

@@ -6,13 +6,16 @@ import {
   IconFileCheck, 
   IconChevronLeft, 
   IconChevronRight,
-  IconPin
+  IconPin,
+  IconClose
 } from './Icons';
 import { useAuth } from '../context/AuthContext';
 
 export default function Sidebar({ 
   projectsCount = 0, 
-  submissionsCount = 0
+  submissionsCount = 0,
+  isMobileOpen = false,
+  onCloseMobile
 }) {
   const [isPinned, setIsPinned] = useState(() => {
     try {
@@ -25,7 +28,7 @@ export default function Sidebar({
   const [isHovered, setIsHovered] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { isAdmin, user, logout } = useAuth();
 
   const isExpanded = isPinned || isHovered;
   const currentPath = location.pathname;
@@ -57,14 +60,16 @@ export default function Sidebar({
 
   const handleNav = (path) => {
     if (!isPinned) setIsHovered(false);
+    if (onCloseMobile) onCloseMobile();
     navigate(path);
   };
 
   const homePath = isAdmin ? '/admin/projects' : '/learner/browse';
 
   return (
-    <div 
-      className="sidebar-container-slot"
+    <>
+      <div 
+        className="sidebar-container-slot"
       style={{
         width: isPinned ? '280px' : '76px',
         minWidth: isPinned ? '280px' : '76px',
@@ -290,5 +295,164 @@ export default function Sidebar({
 
       </aside>
     </div>
+
+    {/* Mobile Off-Canvas Drawer Backdrop */}
+    <div 
+      className={`mobile-sidebar-overlay ${isMobileOpen ? 'open' : ''}`}
+      onClick={onCloseMobile}
+      aria-hidden={!isMobileOpen}
+    />
+
+    {/* Mobile Off-Canvas Drawer */}
+    <aside 
+      className={`mobile-sidebar-drawer ${isMobileOpen ? 'open' : ''}`}
+      aria-label="Mobile navigation"
+    >
+      <div 
+        className="sidebar-header"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '1.15rem 1rem',
+          borderBottom: '1px solid var(--color-border-light)'
+        }}
+      >
+        <div 
+          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+          onClick={() => handleNav(homePath)}
+        >
+          <div className="brand-title" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-text-main)' }}>
+            Project Evaluator
+          </div>
+        </div>
+        <button
+          type="button"
+          className="sidebar-collapse-btn"
+          onClick={onCloseMobile}
+          aria-label="Close navigation"
+          style={{ width: '30px', height: '30px' }}
+        >
+          <IconClose size={18} />
+        </button>
+      </div>
+
+      <nav className="sidebar-nav" style={{ flex: 1, padding: '1rem 0.75rem' }}>
+        <ul className="nav-list" style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+          {isAdmin ? (
+            <>
+              <li>
+                <button
+                  type="button"
+                  className={`nav-item-btn ${isAdminProjectsActive ? 'active' : ''}`}
+                  onClick={() => handleNav('/admin/projects')}
+                  style={{ width: '100%', justifyContent: 'flex-start' }}
+                >
+                  <span className="nav-icon">
+                    <IconFolder size={18} />
+                  </span>
+                  <span>Projects</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  className={`nav-item-btn ${isAdminSubmissionsActive ? 'active' : ''}`}
+                  onClick={() => handleNav('/admin/submissions')}
+                  style={{ width: '100%', justifyContent: 'flex-start' }}
+                >
+                  <span className="nav-icon">
+                    <IconFileCheck size={18} />
+                  </span>
+                  <span>Submissions ({submissionsCount})</span>
+                </button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <button
+                  type="button"
+                  className={`nav-item-btn ${isLearnerProjectsActive ? 'active' : ''}`}
+                  onClick={() => handleNav('/learner/browse')}
+                  style={{ width: '100%', justifyContent: 'flex-start' }}
+                >
+                  <span className="nav-icon">
+                    <IconFolder size={18} />
+                  </span>
+                  <span>Projects</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  className={`nav-item-btn ${isLearnerSubmissionsActive ? 'active' : ''}`}
+                  onClick={() => handleNav('/learner/submissions')}
+                  style={{ width: '100%', justifyContent: 'flex-start' }}
+                >
+                  <span className="nav-icon">
+                    <IconFileCheck size={18} />
+                  </span>
+                  <span>Submissions ({submissionsCount})</span>
+                </button>
+              </li>
+            </>
+          )}
+        </ul>
+      </nav>
+
+      {/* Mobile Drawer User Footer */}
+      {user && (
+        <div style={{
+          padding: '0.85rem 1rem',
+          borderTop: '1px solid var(--color-border-light)',
+          backgroundColor: 'var(--color-surface-subtle)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '0.5rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', overflow: 'hidden' }}>
+            <div style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              backgroundColor: user.role === 'admin' ? 'var(--color-primary)' : '#0284c7',
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 700,
+              fontSize: '0.75rem',
+              flexShrink: 0
+            }}>
+              {(user.name || 'U').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {user.name}
+              </span>
+              <span style={{ fontSize: '0.68rem', fontWeight: 600, color: user.role === 'admin' ? 'var(--color-primary)' : '#0284c7', textTransform: 'capitalize' }}>
+                {user.role}
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              if (onCloseMobile) onCloseMobile();
+              logout();
+              navigate('/login');
+            }}
+            className="btn btn-secondary btn-sm"
+            style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem' }}
+          >
+            Logout
+          </button>
+        </div>
+      )}
+    </aside>
+  </>
   );
 }

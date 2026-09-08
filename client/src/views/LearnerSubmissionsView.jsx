@@ -88,17 +88,8 @@ export default function LearnerSubmissionsView({
       </div>
 
       {/* Filter and Search */}
-      <div 
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '1rem',
-          marginBottom: '1.5rem',
-          flexWrap: 'wrap'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <div className="browse-filter-bar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           {['all', 'passed', 'review'].map((status) => (
             <button
               key={status}
@@ -112,7 +103,7 @@ export default function LearnerSubmissionsView({
           ))}
         </div>
 
-        <div style={{ position: 'relative', width: '280px' }}>
+        <div className="browse-search-box">
           <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }}>
             <IconSearch size={15} />
           </span>

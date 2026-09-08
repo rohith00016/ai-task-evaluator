@@ -1,13 +1,14 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useModals } from '../context/UIContext';
-import { IconPlus } from './Icons';
+import { useModals, useUI } from '../context/UIContext';
+import { IconPlus, IconMenu } from './Icons';
 
 export default function Header({ onOpenCreateModal }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, isAdmin: isUserAdmin } = useAuth();
   const { openCreateProject } = useModals();
+  const { toggleMobileSidebar } = useUI();
 
   const handleCreateClick = () => {
     if (onOpenCreateModal) {
@@ -29,59 +30,59 @@ export default function Header({ onOpenCreateModal }) {
     if (path.startsWith('/admin/projects') || path === '/admin') {
       return (
         <>
-          <span style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Admin</span>
-          <span style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
-          <span style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>Evaluation Projects</span>
+          <span className="breadcrumb-trail" style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Admin</span>
+          <span className="breadcrumb-separator" style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
+          <span className="header-page-title" style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>Evaluation Projects</span>
         </>
       );
     }
     if (path.startsWith('/admin/submissions')) {
       return (
         <>
-          <span style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Admin</span>
-          <span style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
-          <span style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>Student Submissions</span>
+          <span className="breadcrumb-trail" style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Admin</span>
+          <span className="breadcrumb-separator" style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
+          <span className="header-page-title" style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>Student Submissions</span>
         </>
       );
     }
     if (path.startsWith('/learner/browse')) {
       return (
         <>
-          <span style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Learner</span>
-          <span style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
-          <span style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>Browse Projects</span>
+          <span className="breadcrumb-trail" style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Learner</span>
+          <span className="breadcrumb-separator" style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
+          <span className="header-page-title" style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>Browse Projects</span>
         </>
       );
     }
     if (path.startsWith('/learner/projects')) {
       return (
         <>
-          <span style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Learner</span>
-          <span style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
-          <span style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>Project Workspace</span>
+          <span className="breadcrumb-trail" style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Learner</span>
+          <span className="breadcrumb-separator" style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
+          <span className="header-page-title" style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>Project Workspace</span>
         </>
       );
     }
     if (path.startsWith('/learner/submissions')) {
       return (
         <>
-          <span style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Learner</span>
-          <span style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
-          <span style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>My Submissions</span>
+          <span className="breadcrumb-trail" style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Learner</span>
+          <span className="breadcrumb-separator" style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
+          <span className="header-page-title" style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>My Submissions</span>
         </>
       );
     }
     if (path.startsWith('/evaluations')) {
       return (
         <>
-          <span style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Evaluation</span>
-          <span style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
-          <span style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>Scorecard & Codebase</span>
+          <span className="breadcrumb-trail" style={{ color: 'var(--color-text-muted)', fontSize: '0.84rem' }}>Evaluation</span>
+          <span className="breadcrumb-separator" style={{ color: 'var(--color-border)', margin: '0 0.35rem' }}>/</span>
+          <span className="header-page-title" style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>Scorecard & Codebase</span>
         </>
       );
     }
     return (
-      <span style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>
+      <span className="header-page-title" style={{ color: 'var(--color-text-main)', fontWeight: 700, fontSize: '0.88rem' }}>
         Evaluation Dashboard
       </span>
     );
@@ -100,6 +101,15 @@ export default function Header({ onOpenCreateModal }) {
   return (
     <header className="top-header">
       <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+        <button
+          type="button"
+          className="btn-mobile-menu"
+          onClick={toggleMobileSidebar}
+          aria-label="Open navigation menu"
+          id="btn-mobile-nav-toggle"
+        >
+          <IconMenu size={20} />
+        </button>
         <div className="header-breadcrumbs" style={{ display: 'flex', alignItems: 'center' }}>
           {getBreadcrumb()}
         </div>
@@ -121,14 +131,14 @@ export default function Header({ onOpenCreateModal }) {
 
         {/* User Profile Pill & Logout */}
         {user && (
-          <div style={{
+          <div className="header-user-section" style={{
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem',
             paddingLeft: '0.75rem',
             borderLeft: '1px solid var(--color-border, #e2e8f0)'
           }}>
-            <div style={{
+            <div className="header-profile-pill" style={{
               display: 'flex',
               alignItems: 'center',
               gap: '0.55rem',
@@ -151,7 +161,7 @@ export default function Header({ onOpenCreateModal }) {
               }}>
                 {getInitials(user.name)}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+              <div className="header-user-text" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
                 <span style={{
                   fontSize: '0.8rem',
                   fontWeight: 700,
@@ -173,7 +183,7 @@ export default function Header({ onOpenCreateModal }) {
             <button
               type="button"
               onClick={handleLogout}
-              className="btn btn-secondary btn-sm"
+              className="btn btn-secondary btn-sm btn-header-logout"
               style={{
                 fontSize: '0.78rem',
                 padding: '0.35rem 0.7rem',

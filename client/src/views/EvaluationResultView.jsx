@@ -251,7 +251,7 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
       {activeSubTab === 'scorecard' && (
         <div className="eval-layout-grid">
           {/* LEFT COLUMN: Summary, Score & Criteria Breakdown */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'sticky', top: '1rem' }}>
+          <div className="eval-left-col">
             {/* Score & Meta Card */}
             <div className="eval-card" style={{ padding: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
@@ -565,28 +565,9 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
           </div>
 
           {scrapedFiles.length > 0 ? (
-            <div 
-              style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'minmax(280px, 340px) 1fr', 
-                gap: '0', 
-                border: '1px solid var(--color-border)', 
-                borderRadius: 'var(--radius-md)', 
-                overflow: 'hidden', 
-                minHeight: '620px',
-                boxShadow: 'var(--shadow-sm)'
-              }}
-            >
+            <div className="code-explorer-grid">
               {/* Left Sidebar: File Filter & List */}
-              <div 
-                style={{ 
-                  backgroundColor: '#f8fafc', 
-                  borderRight: '1px solid var(--color-border)', 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  maxHeight: '620px'
-                }}
-              >
+              <div className="code-explorer-sidebar">
                 {/* Search Bar */}
                 <div style={{ padding: '0.75rem', borderBottom: '1px solid var(--color-border)', backgroundColor: '#ffffff' }}>
                   <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>

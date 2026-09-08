@@ -80,20 +80,20 @@ export async function evaluateRepositoryCode(project, repoData, submissionData) 
   const criteriaList = project.criteria && project.criteria.length > 0
     ? project.criteria
     : [
-        { name: 'Core Functionality & PRD Deliverables', maxScore: 30 },
-        { name: 'Architecture & Modularity', maxScore: 25 },
-        { name: 'Security & Error Handling', maxScore: 25 },
-        { name: 'Code Quality & Documentation', maxScore: 20 }
-      ];
+      { name: 'Core Functionality & PRD Deliverables', maxScore: 30 },
+      { name: 'Architecture & Modularity', maxScore: 25 },
+      { name: 'Security & Error Handling', maxScore: 25 },
+      { name: 'Code Quality & Documentation', maxScore: 20 }
+    ];
 
   const requirementsList = project.requirements && project.requirements.length > 0
     ? project.requirements
     : [
-        'User authentication with JWT',
-        'Resource CRUD operations',
-        'Persistent database integration',
-        'Responsive user interface'
-      ];
+      'User authentication with JWT',
+      'Resource CRUD operations',
+      'Persistent database integration',
+      'Responsive user interface'
+    ];
 
   const prdMarkdown = project.rawMarkdown || project.documentation?.rawMarkdown || project.description || '';
 
@@ -133,7 +133,7 @@ Evaluate the following learner repository submission against the project's PRD s
 
 PROJECT DETAILS:
 Title: "${project.title}"
-Course Track: "${project.course || project.category || 'MERN'}"
+Course: "${project.course || project.category || 'MERN'}"
 
 DELIVERABLES CHECKLIST TO VERIFY:
 ${requirementsList.map((r, idx) => `${idx + 1}. ${r}`).join('\n')}
@@ -318,13 +318,13 @@ Return ONLY valid JSON matching this schema:
   const deliverables = Array.isArray(result.deliverables) && result.deliverables.length > 0
     ? result.deliverables
     : [
-        `Implement core business workflows specified in ${projectTitle} PRD`,
-        'Authentication and secure session handling with token verification',
-        'Database schema models, relations, and migrations',
-        'Input validation, error handling, and security headers',
-        'RESTful API endpoint implementations matching PRD specs',
-        'Responsive user interface with smooth state management'
-      ];
+      `Implement core business workflows specified in ${projectTitle} PRD`,
+      'Authentication and secure session handling with token verification',
+      'Database schema models, relations, and migrations',
+      'Input validation, error handling, and security headers',
+      'RESTful API endpoint implementations matching PRD specs',
+      'Responsive user interface with smooth state management'
+    ];
 
   return deliverables;
 }
@@ -368,11 +368,11 @@ Return ONLY valid JSON matching this schema:
   let criteria = Array.isArray(result.criteria) && result.criteria.length > 0
     ? result.criteria
     : [
-        { name: 'Core Functionality & PRD Deliverables', maxScore: 30 },
-        { name: 'Architecture & Modularity', maxScore: 25 },
-        { name: 'Security & Error Handling', maxScore: 25 },
-        { name: 'Code Quality & Documentation', maxScore: 20 }
-      ];
+      { name: 'Core Functionality & PRD Deliverables', maxScore: 30 },
+      { name: 'Architecture & Modularity', maxScore: 25 },
+      { name: 'Security & Error Handling', maxScore: 25 },
+      { name: 'Code Quality & Documentation', maxScore: 20 }
+    ];
 
   // Ensure 4 items
   if (criteria.length !== 4) {

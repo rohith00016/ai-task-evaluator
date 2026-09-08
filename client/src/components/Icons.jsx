@@ -158,3 +158,12 @@ export const IconCode = ({ size = 16, className = '' }) => (
     <polyline points="8 6 2 12 8 18"></polyline>
   </svg>
 );
+
+export const IconMenu = ({ size = 20, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="3" y1="12" x2="21" y2="12"></line>
+    <line x1="3" y1="6" x2="21" y2="6"></line>
+    <line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+);
+

@@ -25,7 +25,9 @@ export default function AppLayout() {
     isEvaluating,
     evalStage,
     evalProgress,
-    evaluatingRepoUrl
+    evaluatingRepoUrl,
+    isMobileSidebarOpen,
+    closeMobileSidebar
   } = useUI();
 
   const isLoading = isProjectsLoading || isSubmissionsLoading;
@@ -52,6 +54,8 @@ export default function AppLayout() {
       <Sidebar
         projectsCount={projects.length}
         submissionsCount={submissions.length}
+        isMobileOpen={isMobileSidebarOpen}
+        onCloseMobile={closeMobileSidebar}
       />
 
       {/* Main Workspace Body */}

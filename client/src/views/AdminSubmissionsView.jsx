@@ -146,19 +146,10 @@ export default function AdminSubmissionsView({
       </div>
 
       {/* Filter and Search Bar */}
-      <div 
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '1rem',
-          marginBottom: '1.5rem',
-          flexWrap: 'wrap'
-        }}
-      >
+      <div className="browse-filter-bar">
         {/* Status Filters & Project Selector */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
             {['all', 'passed', 'review', 'failed'].map((status) => (
               <button
                 key={status}
@@ -199,7 +190,7 @@ export default function AdminSubmissionsView({
         </div>
 
         {/* Search Input */}
-        <div style={{ position: 'relative', width: '300px' }}>
+        <div className="browse-search-box">
           <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }}>
             <IconSearch size={15} />
           </span>

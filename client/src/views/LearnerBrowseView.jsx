@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  IconArrowRight, 
-  IconSearch, 
-  IconCompass, 
-  IconCheck, 
-  IconPlus, 
-  IconTrash, 
+import {
+  IconArrowRight,
+  IconSearch,
+  IconCompass,
+  IconCheck,
+  IconPlus,
+  IconTrash,
   IconBookOpen,
-  IconEdit 
+  IconEdit
 } from '../components/Icons';
 import { useQueryClient } from '@tanstack/react-query';
 import { useProjects, useDeleteProjectMutation, PROJECT_KEYS } from '../hooks/useProjectsQuery';
@@ -16,10 +16,10 @@ import { useSubmissions } from '../hooks/useSubmissionsQuery';
 import { useModals, useToast } from '../context/UIContext';
 import { fetchProjectById } from '../services/api';
 
-export default function LearnerBrowseView({ 
+export default function LearnerBrowseView({
   mode = 'learner', // 'learner' | 'admin'
-  projects: propProjects, 
-  submissions: propSubmissions, 
+  projects: propProjects,
+  submissions: propSubmissions,
   onSelectProject,
   onOpenCreateModal,
   onDeleteProject,
@@ -104,7 +104,7 @@ export default function LearnerBrowseView({
   };
 
   const filteredProjects = projects.filter((proj) => {
-    const matchesSearch = 
+    const matchesSearch =
       proj.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (proj.description && proj.description.toLowerCase().includes(searchTerm.toLowerCase()));
     const projCourse = proj.course || proj.category || 'MERN';
@@ -128,16 +128,7 @@ export default function LearnerBrowseView({
       </div>
 
       {/* Filter & Search Bar */}
-      <div 
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '1rem',
-          marginBottom: '1.75rem',
-          flexWrap: 'wrap'
-        }}
-      >
+      <div className="browse-filter-bar">
         {/* Course Track Filter Pills */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           {courses.map((course) => (
@@ -148,13 +139,13 @@ export default function LearnerBrowseView({
               onClick={() => handleCourseChange(course)}
               style={{ fontSize: '0.8125rem', fontWeight: 700 }}
             >
-              {course === 'All' ? 'All Courses' : `${course} Track`}
+              {course === 'All' ? 'All Courses' : `${course}`}
             </button>
           ))}
         </div>
 
         {/* Search Input */}
-        <div style={{ position: 'relative', width: '280px' }}>
+        <div className="browse-search-box">
           <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }}>
             <IconSearch size={15} />
           </span>
@@ -182,7 +173,7 @@ export default function LearnerBrowseView({
             <div key={proj.id || proj._id} className="project-card">
               <div className="project-card-header">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-                  <span 
+                  <span
                     style={{
                       fontSize: '0.72rem',
                       fontWeight: 700,
@@ -191,7 +182,7 @@ export default function LearnerBrowseView({
                       ...getCourseBadgeStyle(courseName)
                     }}
                   >
-                    {courseName} Track
+                    {courseName}
                   </span>
 
                   {isAdmin ? (
@@ -216,7 +207,7 @@ export default function LearnerBrowseView({
                     </button>
                   ) : (
                     latestSubmission && (
-                      <span 
+                      <span
                         style={{
                           fontSize: '0.72rem',
                           fontWeight: 700,
@@ -248,7 +239,7 @@ export default function LearnerBrowseView({
                   <div className="spec-row">
                     <span className="spec-label">Course:</span>
                     <span className="spec-val" style={{ color: 'var(--color-text-main)', fontWeight: 700 }}>
-                      {courseName} Track
+                      {courseName}
                     </span>
                   </div>
                   <div className="spec-row">
@@ -326,9 +317,9 @@ export default function LearnerBrowseView({
           </div>
           <h3>No projects found</h3>
           <p>
-            {searchTerm 
+            {searchTerm
               ? `No projects matching "${searchTerm}". Try a different keyword or course filter.`
-              : `There are no evaluation projects currently configured for the ${selectedCourse} course track.`}
+              : `There are no evaluation projects currently configured for the ${selectedCourse} course.`}
           </p>
         </div>
       )}

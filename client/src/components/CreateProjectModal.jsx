@@ -388,9 +388,8 @@ Provide clean commit history, a complete README with setup commands, and an .env
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
-        className="modal-content"
+        className="modal-content create-modal-container"
         onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: '1080px', width: '95vw', height: '92vh', display: 'flex', flexDirection: 'column' }}
       >
         {/* Header & Step Indicator */}
         <div className="modal-header" style={{ padding: '1.15rem 1.75rem', borderBottom: '1px solid var(--color-border)' }}>
@@ -488,7 +487,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflow: 'hidden' }}>
 
             {/* Title & Domain Row */}
-            <div style={{ padding: '0.85rem 1.75rem', backgroundColor: '#ffffff', borderBottom: '1px solid var(--color-border)', display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(200px, 1fr)', gap: '1rem' }}>
+            <div className="prd-title-domain-row">
               <div>
                 <label className="form-label" style={{ marginBottom: '0.25rem', fontSize: '0.78rem' }}>Project Title *</label>
                 <input
@@ -594,7 +593,7 @@ Provide clean commit history, a complete README with setup commands, and an .env
             )}
 
             {/* Split Screen Workspace: Editor Left, Preview Right */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+            <div className="prd-split-editor">
 
               {/* Left Column: Raw Text Editor */}
               <div style={{ display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--color-border)', backgroundColor: '#ffffff', overflow: 'hidden' }}>
