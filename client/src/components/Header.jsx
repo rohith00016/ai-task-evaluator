@@ -103,9 +103,6 @@ export default function Header({ onOpenCreateModal }) {
         <div className="header-breadcrumbs" style={{ display: 'flex', alignItems: 'center' }}>
           {getBreadcrumb()}
         </div>
-        <span className={`role-pill ${isAdminRoute ? 'admin' : 'learner'}`}>
-          {isAdminRoute ? 'Instructor Admin' : 'Learner Portal'}
-        </span>
       </div>
 
       <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

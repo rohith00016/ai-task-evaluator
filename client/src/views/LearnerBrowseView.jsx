@@ -144,7 +144,7 @@ export default function LearnerBrowseView({
             <button
               key={course}
               type="button"
-              className={`btn btn-sm ${selectedCourse === course ? 'btn-dark' : 'btn-secondary'}`}
+              className={`btn btn-sm ${selectedCourse === course ? 'btn-primary' : 'btn-secondary'}`}
               onClick={() => handleCourseChange(course)}
               style={{ fontSize: '0.8125rem', fontWeight: 700 }}
             >
