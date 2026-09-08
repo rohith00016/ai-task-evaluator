@@ -14,6 +14,7 @@ import { useSubmitEvaluationMutation } from '../hooks/useSubmissionsQuery';
 import { useProject } from '../hooks/useProjectsQuery';
 import { useUI, useToast } from '../context/UIContext';
 import MarkdownViewer from '../components/MarkdownViewer';
+import { getProjectPRDMarkdown } from '../services/api';
 
 export default function ProjectDetailSubmissionView({ 
   project: propProject, 

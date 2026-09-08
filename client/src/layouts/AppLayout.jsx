@@ -69,7 +69,7 @@ export default function AppLayout() {
                   margin: '0 auto 1rem' 
                 }}
               />
-              <p style={{ fontWeight: 600, fontSize: '0.9rem' }}>Loading projects from MongoDB...</p>
+              <p style={{ fontWeight: 600, fontSize: '0.9rem' }}>Loading projects...</p>
             </div>
           ) : (
             <Outlet />
