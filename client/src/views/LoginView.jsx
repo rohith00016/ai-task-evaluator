@@ -17,7 +17,8 @@ export default function LoginView() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !password) {
       setError('Please enter both email and password.');
       return;
     }
@@ -25,7 +26,7 @@ export default function LoginView() {
     try {
       setIsSubmitting(true);
       setError(null);
-      const user = await login({ email, password });
+      const user = await login({ email: cleanEmail, password });
       
       // Determine redirect destination
       if (fromPath && !fromPath.startsWith('/login')) {
