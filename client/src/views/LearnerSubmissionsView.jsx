@@ -8,13 +8,17 @@ import {
   IconArrowRight,
   IconCheck
 } from '../components/Icons';
+import { useSubmissions } from '../hooks/useSubmissionsQuery';
 
 export default function LearnerSubmissionsView({ 
-  submissions = [], 
+  submissions: propSubmissions, 
   onViewEvaluation, 
   onSelectProjectById 
 }) {
   const navigate = useNavigate();
+  const { data: hookSubmissions = [] } = useSubmissions();
+  const submissions = propSubmissions !== undefined ? propSubmissions : hookSubmissions;
+
   const handleView = onViewEvaluation || ((sub) => navigate(`/evaluations/${sub.id || sub._id}`));
   const handleSelectProj = onSelectProjectById || ((projId) => navigate(`/learner/projects/${projId}`));
 
@@ -72,7 +76,7 @@ export default function LearnerSubmissionsView({
 
         <div className="metric-card">
           <div className="metric-content">
-            <h3>Passed Benchmarks</h3>
+            <h3>Passed Projects</h3>
             <div className="metric-value" style={{ color: 'var(--color-primary)' }}>
               {passedCount}
             </div>

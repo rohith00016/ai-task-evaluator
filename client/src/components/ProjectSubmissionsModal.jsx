@@ -20,7 +20,7 @@ export default function ProjectSubmissionsModal({
               Learner Submissions: {project.title}
             </h2>
             <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginTop: '2px' }}>
-              {projectSubmissions.length} submission(s) logged for this benchmark
+              {projectSubmissions.length} submission(s) logged for this project
             </p>
           </div>
           <button type="button" onClick={onClose} className="btn btn-secondary btn-sm" style={{ padding: '4px', border: 'none' }}>

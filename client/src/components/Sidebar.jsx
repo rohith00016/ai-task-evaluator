@@ -8,6 +8,7 @@ import {
   IconChevronRight,
   IconPin
 } from './Icons';
+import { useAuth } from '../context/AuthContext';
 
 export default function Sidebar({ 
   projectsCount = 0, 
@@ -24,13 +25,17 @@ export default function Sidebar({
   const [isHovered, setIsHovered] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
 
   const isExpanded = isPinned || isHovered;
   const currentPath = location.pathname;
 
-  const isAdminActive = currentPath.startsWith('/admin') || currentPath === '/';
-  const isBrowseActive = currentPath.startsWith('/learner/browse') || currentPath.startsWith('/learner/projects');
-  const isSubmissionsActive = currentPath.startsWith('/learner/submissions') || currentPath.startsWith('/evaluations');
+  // Active state detection
+  const isAdminProjectsActive = currentPath.startsWith('/admin/projects') || (currentPath === '/' && isAdmin);
+  const isAdminSubmissionsActive = currentPath.startsWith('/admin/submissions');
+
+  const isLearnerProjectsActive = currentPath.startsWith('/learner/browse') || currentPath.startsWith('/learner/projects') || (currentPath === '/' && !isAdmin);
+  const isLearnerSubmissionsActive = currentPath.startsWith('/learner/submissions') || (!isAdmin && currentPath.startsWith('/evaluations'));
 
   const handlePin = (e) => {
     if (e) e.stopPropagation();
@@ -54,6 +59,8 @@ export default function Sidebar({
     if (!isPinned) setIsHovered(false);
     navigate(path);
   };
+
+  const homePath = isAdmin ? '/admin/projects' : '/learner/browse';
 
   return (
     <div 
@@ -108,7 +115,7 @@ export default function Sidebar({
             <>
               <div 
                 style={{ display: 'flex', alignItems: 'center', overflow: 'hidden', cursor: 'pointer' }}
-                onClick={() => handleNav('/admin/projects')}
+                onClick={() => handleNav(homePath)}
                 title="Project Evaluator"
               >
                 <div className="brand-title" style={{ whiteSpace: 'nowrap', fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-text-main)', letterSpacing: '-0.02em' }}>
@@ -189,143 +196,209 @@ export default function Sidebar({
           )}
         </div>
 
-        {/* Navigation Sections */}
+        {/* Navigation Section */}
         <nav className="sidebar-nav" style={{ flex: 1, padding: isExpanded ? '1.25rem 0.75rem' : '1rem 0.45rem' }}>
-          {/* ADMIN Section - Clean without sub-tracks */}
-          <div className="nav-section" style={{ marginBottom: '1.5rem' }}>
-            {isExpanded ? (
-              <div className="nav-section-title">ADMIN CONTROLS</div>
-            ) : (
-              <div style={{ height: '1px', backgroundColor: 'var(--color-border-light)', margin: '0.5rem 0.25rem 0.75rem' }} />
-            )}
-            
-            <ul className="nav-list" style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              <li>
-                <button
-                  type="button"
-                  className={`nav-item-btn ${isAdminActive ? 'active' : ''}`}
-                  onClick={() => handleNav('/admin/projects')}
-                  id="nav-admin-projects"
-                  title="Evaluation Projects"
-                  style={{
-                    justifyContent: isExpanded ? 'flex-start' : 'center',
-                    padding: isExpanded ? '0.625rem 0.75rem' : '0.65rem 0',
-                    width: '100%'
-                  }}
-                >
-                  <span className="nav-icon">
-                    <IconFolder size={18} />
-                  </span>
-                  {isExpanded && (
-                    <>
-                      <span style={{ whiteSpace: 'nowrap' }}>Projects</span>
-                      {projectsCount > 0 && (
+          <ul className="nav-list" style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+            {isAdmin ? (
+              /* =======================================
+               * ADMIN SIDEBAR: Exactly 2 Menu Items
+               * ======================================= */
+              <>
+                <li>
+                  <button
+                    type="button"
+                    className={`nav-item-btn ${isAdminProjectsActive ? 'active' : ''}`}
+                    onClick={() => handleNav('/admin/projects')}
+                    id="nav-admin-projects"
+                    title="Evaluation Projects"
+                    style={{
+                      justifyContent: isExpanded ? 'flex-start' : 'center',
+                      padding: isExpanded ? '0.625rem 0.75rem' : '0.65rem 0',
+                      width: '100%'
+                    }}
+                  >
+                    <span className="nav-icon">
+                      <IconFolder size={18} />
+                    </span>
+                    {isExpanded && (
+                      <>
+                        <span style={{ whiteSpace: 'nowrap' }}>Projects</span>
+                        {projectsCount > 0 && (
+                          <span 
+                            style={{
+                              marginLeft: 'auto',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              backgroundColor: 'var(--color-surface-subtle)',
+                              color: 'var(--color-primary-hover)',
+                              padding: '1px 7px',
+                              borderRadius: '9999px',
+                              border: '1px solid var(--color-surface-subtle-border)'
+                            }}
+                          >
+                            {projectsCount}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className={`nav-item-btn ${isAdminSubmissionsActive ? 'active' : ''}`}
+                    onClick={() => handleNav('/admin/submissions')}
+                    id="nav-admin-submissions"
+                    title={`Student Submissions (${submissionsCount})`}
+                    style={{
+                      justifyContent: isExpanded ? 'flex-start' : 'center',
+                      padding: isExpanded ? '0.625rem 0.75rem' : '0.65rem 0',
+                      width: '100%',
+                      position: 'relative'
+                    }}
+                  >
+                    <span className="nav-icon">
+                      <IconFileCheck size={18} />
+                    </span>
+                    {isExpanded ? (
+                      <>
+                        <span style={{ whiteSpace: 'nowrap' }}>Submissions</span>
+                        {submissionsCount > 0 && (
+                          <span 
+                            style={{
+                              marginLeft: 'auto',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              backgroundColor: 'var(--color-surface-subtle)',
+                              color: 'var(--color-primary-hover)',
+                              padding: '1px 7px',
+                              borderRadius: '9999px',
+                              border: '1px solid var(--color-surface-subtle-border)'
+                            }}
+                          >
+                            {submissionsCount}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      submissionsCount > 0 && (
                         <span 
                           style={{
-                            marginLeft: 'auto',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            backgroundColor: 'var(--color-surface-subtle)',
-                            color: 'var(--color-primary-hover)',
-                            padding: '1px 7px',
-                            borderRadius: '9999px',
-                            border: '1px solid var(--color-surface-subtle-border)'
+                            position: 'absolute',
+                            top: '6px',
+                            right: '12px',
+                            width: '7px',
+                            height: '7px',
+                            borderRadius: '50%',
+                            backgroundColor: 'var(--color-primary)'
                           }}
-                        >
-                          {projectsCount}
-                        </span>
-                      )}
-                    </>
-                  )}
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* LEARNER Section */}
-          <div className="nav-section">
-            {isExpanded ? (
-              <div className="nav-section-title">LEARNER PORTAL</div>
+                        />
+                      )
+                    )}
+                  </button>
+                </li>
+              </>
             ) : (
-              <div style={{ height: '1px', backgroundColor: 'var(--color-border-light)', margin: '0.5rem 0.25rem 0.75rem' }} />
-            )}
-
-            <ul className="nav-list" style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              <li>
-                <button
-                  type="button"
-                  className={`nav-item-btn ${isBrowseActive ? 'active' : ''}`}
-                  onClick={() => handleNav('/learner/browse')}
-                  id="nav-learner-browse"
-                  title="Browse Projects"
-                  style={{
-                    justifyContent: isExpanded ? 'flex-start' : 'center',
-                    padding: isExpanded ? '0.625rem 0.75rem' : '0.65rem 0',
-                    width: '100%'
-                  }}
-                >
-                  <span className="nav-icon">
-                    <IconCompass size={18} />
-                  </span>
-                  {isExpanded && <span style={{ whiteSpace: 'nowrap' }}>Browse Projects</span>}
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  className={`nav-item-btn ${isSubmissionsActive ? 'active' : ''}`}
-                  onClick={() => handleNav('/learner/submissions')}
-                  id="nav-learner-submissions"
-                  title={`My Submissions (${submissionsCount})`}
-                  style={{
-                    justifyContent: isExpanded ? 'flex-start' : 'center',
-                    padding: isExpanded ? '0.625rem 0.75rem' : '0.65rem 0',
-                    width: '100%',
-                    position: 'relative'
-                  }}
-                >
-                  <span className="nav-icon">
-                    <IconFileCheck size={18} />
-                  </span>
-                  {isExpanded ? (
-                    <>
-                      <span style={{ whiteSpace: 'nowrap' }}>My Submissions</span>
-                      {submissionsCount > 0 && (
+              /* =======================================
+               * LEARNER SIDEBAR: Clean 2 Menu Items
+               * ======================================= */
+              <>
+                <li>
+                  <button
+                    type="button"
+                    className={`nav-item-btn ${isLearnerProjectsActive ? 'active' : ''}`}
+                    onClick={() => handleNav('/learner/browse')}
+                    id="nav-learner-browse"
+                    title="Projects"
+                    style={{
+                      justifyContent: isExpanded ? 'flex-start' : 'center',
+                      padding: isExpanded ? '0.625rem 0.75rem' : '0.65rem 0',
+                      width: '100%'
+                    }}
+                  >
+                    <span className="nav-icon">
+                      <IconFolder size={18} />
+                    </span>
+                    {isExpanded && (
+                      <>
+                        <span style={{ whiteSpace: 'nowrap' }}>Projects</span>
+                        {projectsCount > 0 && (
+                          <span 
+                            style={{
+                              marginLeft: 'auto',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              backgroundColor: 'var(--color-surface-subtle)',
+                              color: 'var(--color-primary-hover)',
+                              padding: '1px 7px',
+                              borderRadius: '9999px',
+                              border: '1px solid var(--color-surface-subtle-border)'
+                            }}
+                          >
+                            {projectsCount}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className={`nav-item-btn ${isLearnerSubmissionsActive ? 'active' : ''}`}
+                    onClick={() => handleNav('/learner/submissions')}
+                    id="nav-learner-submissions"
+                    title={`Submissions (${submissionsCount})`}
+                    style={{
+                      justifyContent: isExpanded ? 'flex-start' : 'center',
+                      padding: isExpanded ? '0.625rem 0.75rem' : '0.65rem 0',
+                      width: '100%',
+                      position: 'relative'
+                    }}
+                  >
+                    <span className="nav-icon">
+                      <IconFileCheck size={18} />
+                    </span>
+                    {isExpanded ? (
+                      <>
+                        <span style={{ whiteSpace: 'nowrap' }}>Submissions</span>
+                        {submissionsCount > 0 && (
+                          <span 
+                            style={{
+                              marginLeft: 'auto',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              backgroundColor: 'var(--color-surface-subtle)',
+                              color: 'var(--color-primary-hover)',
+                              padding: '1px 7px',
+                              borderRadius: '9999px',
+                              border: '1px solid var(--color-surface-subtle-border)'
+                            }}
+                          >
+                            {submissionsCount}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      submissionsCount > 0 && (
                         <span 
                           style={{
-                            marginLeft: 'auto',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            backgroundColor: 'var(--color-surface-subtle)',
-                            color: 'var(--color-primary-hover)',
-                            padding: '1px 7px',
-                            borderRadius: '9999px',
-                            border: '1px solid var(--color-surface-subtle-border)'
+                            position: 'absolute',
+                            top: '6px',
+                            right: '12px',
+                            width: '7px',
+                            height: '7px',
+                            borderRadius: '50%',
+                            backgroundColor: 'var(--color-primary)'
                           }}
-                        >
-                          {submissionsCount}
-                        </span>
-                      )}
-                    </>
-                  ) : (
-                    submissionsCount > 0 && (
-                      <span 
-                        style={{
-                          position: 'absolute',
-                          top: '6px',
-                          right: '12px',
-                          width: '7px',
-                          height: '7px',
-                          borderRadius: '50%',
-                          backgroundColor: 'var(--color-primary)'
-                        }}
-                      />
-                    )
-                  )}
-                </button>
-              </li>
-            </ul>
-          </div>
+                        />
+                      )
+                    )}
+                  </button>
+                </li>
+              </>
+            )}
+          </ul>
         </nav>
 
       </aside>

@@ -1,7 +1,25 @@
 import { IconSparkles, IconGithub } from './Icons';
 
-export default function EvaluationProgressModal({ isOpen, currentStage, progressPercent, repoUrl }) {
+export default function EvaluationProgressModal({ 
+  isOpen, 
+  currentStage, 
+  stage, 
+  progressPercent, 
+  overallProgress, 
+  repoUrl 
+}) {
   if (!isOpen) return null;
+
+  const activeStage = currentStage || stage;
+  const percent = typeof progressPercent === 'number'
+    ? progressPercent
+    : (typeof overallProgress === 'number'
+      ? overallProgress
+      : (activeStage?.progressPercent || 0));
+
+  const stageIndex = activeStage?.stageIndex !== undefined ? activeStage.stageIndex + 1 : 1;
+  const totalStages = activeStage?.totalStages || 4;
+  const stageMessage = activeStage?.message || 'Analyzing repository codebase...';
 
   return (
     <div className="modal-overlay" style={{ zIndex: 100 }}>
@@ -38,18 +56,20 @@ export default function EvaluationProgressModal({ isOpen, currentStage, progress
 
         {/* Progress Bar */}
         <div style={{ marginBottom: '1.25rem' }}>
-          <div className="bar-track" style={{ height: '10px', backgroundColor: '#e2e8f0' }}>
+          <div className="bar-track" style={{ height: '10px', backgroundColor: '#e2e8f0', borderRadius: '9999px', overflow: 'hidden' }}>
             <div 
               className="bar-fill" 
               style={{ 
-                width: `${progressPercent}%`,
-                background: 'linear-gradient(90deg, var(--color-primary) 0%, #22c55e 100%)'
+                width: `${percent}%`,
+                background: 'linear-gradient(90deg, var(--color-primary) 0%, #22c55e 100%)',
+                height: '100%',
+                transition: 'width 0.4s ease'
               }}
             ></div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '0.4rem', fontWeight: 600 }}>
-            <span>Stage {currentStage?.stageIndex !== undefined ? currentStage.stageIndex + 1 : 1} of {currentStage?.totalStages || 5}</span>
-            <span style={{ color: 'var(--color-primary-hover)', fontWeight: 800 }}>{progressPercent}%</span>
+            <span>Stage {stageIndex} of {totalStages}</span>
+            <span style={{ color: 'var(--color-primary-hover)', fontWeight: 800 }}>{percent}%</span>
           </div>
         </div>
 
@@ -70,7 +90,7 @@ export default function EvaluationProgressModal({ isOpen, currentStage, progress
           }}
         >
           <IconSparkles size={16} />
-          <span>{currentStage?.message || 'Analyzing repository codebase...'}</span>
+          <span>{stageMessage}</span>
         </div>
       </div>
     </div>

@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useSubmission, useReevaluateMutation } from '../hooks/useSubmissionsQuery';
+import { useToast } from '../context/UIContext';
 import { 
   IconCopy, 
   IconRefreshCw, 
   IconGithub, 
   IconSearch, 
   IconExternalLink, 
-  IconCheck 
+  IconCheck,
+  IconFileCheck,
+  IconCode
 } from '../components/Icons';
 
 export default function EvaluationResultView({ 
@@ -16,72 +21,41 @@ export default function EvaluationResultView({
 }) {
   const { submissionId } = useParams();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
+  const reevaluateMutation = useReevaluateMutation();
+  const { showToast } = useToast();
   const [activeSubTab, setActiveSubTab] = useState('scorecard'); // 'scorecard' | 'code'
   const [copied, setCopied] = useState(false);
+  const [copiedFile, setCopiedFile] = useState(false);
   const [selectedFileIdx, setSelectedFileIdx] = useState(0);
   const [fileSearchQuery, setFileSearchQuery] = useState('');
-  const [fetchedSubmission, setFetchedSubmission] = useState(null);
+
   const isPropMatching = propSubmission && (propSubmission.id === submissionId || propSubmission._id === submissionId);
-  const [loading, setLoading] = useState(!isPropMatching && !!submissionId);
-  const [fetchError, setFetchError] = useState(null);
 
-  // Sync with matching propSubmission immediately when passed or updated (e.g. re-evaluation)
-  useEffect(() => {
-    if (isPropMatching) {
-      setFetchedSubmission(propSubmission);
-      setLoading(false);
-    }
-  }, [propSubmission]);
+  // Authenticated React Query hook: loads submission by ID with Bearer token & caching
+  const { 
+    data: querySubmission, 
+    isLoading: isQueryLoading, 
+    error: queryError 
+  } = useSubmission(submissionId, {
+    initialData: isPropMatching ? propSubmission : undefined
+  });
 
-  // Fetch fresh evaluation whenever submissionId route parameter changes
+  const submission = querySubmission || (isPropMatching ? propSubmission : null);
+  const loading = (isQueryLoading || reevaluateMutation.isPending) && !submission;
+  const fetchError = queryError ? queryError.message : null;
+
+  // Reset file explorer state when changing route submissionId
   useEffect(() => {
     setSelectedFileIdx(0);
     setFileSearchQuery('');
-    setFetchError(null);
-
-    if (!submissionId) return;
-
-    let isMounted = true;
-
-    // Show loading spinner only if we do not already have matching cached data
-    if (!isPropMatching) {
-      setLoading(true);
-    }
-
-    fetch(`/api/submissions/${submissionId}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to load submission evaluation');
-        return res.json();
-      })
-      .then((data) => {
-        if (isMounted && data) {
-          setFetchedSubmission(data);
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          console.error('Error fetching submission evaluation:', err);
-          if (!isPropMatching) {
-            setFetchError(err.message);
-          }
-        }
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
   }, [submissionId]);
-
-  const submission = fetchedSubmission || (isPropMatching ? propSubmission : null);
 
   const handleBackAction = () => {
     if (onBack) {
       onBack();
     } else {
-      navigate('/learner/submissions');
+      navigate(isAdmin ? '/admin/submissions' : '/learner/submissions');
     }
   };
 
@@ -90,17 +64,13 @@ export default function EvaluationResultView({
       onReevaluate(sub);
       return;
     }
-    if (!sub || !sub._id) return;
+    const targetId = sub?.id || sub?._id || submissionId;
+    if (!targetId) return;
     try {
-      setLoading(true);
-      const res = await fetch(`/api/submissions/${sub._id}/reevaluate`, { method: 'POST' });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to re-evaluate');
-      setFetchedSubmission(data);
+      const updated = await reevaluateMutation.mutateAsync(targetId);
+      showToast(`Re-evaluation completed! New Score: ${updated.score}/100`);
     } catch (err) {
-      alert(`Re-evaluation failed: ${err.message}`);
-    } finally {
-      setLoading(false);
+      showToast(`Re-evaluation failed: ${err.message}`, 'error');
     }
   };
 
@@ -235,7 +205,7 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
             transition: 'var(--transition-fast)'
           }}
         >
-          <span>📊</span>
+          <IconFileCheck size={16} />
           <span>Evaluation Scorecard</span>
         </button>
 
@@ -260,7 +230,7 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
             transition: 'var(--transition-fast)'
           }}
         >
-          <span>💻</span>
+          <IconCode size={16} />
           <span>Scraped Codebase</span>
           <span 
             style={{ 

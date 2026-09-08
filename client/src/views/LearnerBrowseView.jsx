@@ -10,11 +10,15 @@ import {
   IconBookOpen,
   IconEdit 
 } from '../components/Icons';
+import { useProjects, useDeleteProjectMutation } from '../hooks/useProjectsQuery';
+import { useSubmissions } from '../hooks/useSubmissionsQuery';
+import { useModals, useToast } from '../context/UIContext';
+import { fetchProjectById } from '../services/api';
 
 export default function LearnerBrowseView({ 
   mode = 'learner', // 'learner' | 'admin'
-  projects = [], 
-  submissions = [], 
+  projects: propProjects, 
+  submissions: propSubmissions, 
   onSelectProject,
   onOpenCreateModal,
   onDeleteProject,
@@ -25,7 +29,44 @@ export default function LearnerBrowseView({
 }) {
   const navigate = useNavigate();
   const isAdmin = mode === 'admin';
+
+  // React Query hooks for autonomous state
+  const { data: hookProjects = [] } = useProjects();
+  const { data: hookSubmissions = [] } = useSubmissions();
+  const deleteProjectMutation = useDeleteProjectMutation();
+  const { showToast } = useToast();
+  const { openCreateProject, openProjectSubmissions } = useModals();
+
+  const projects = propProjects !== undefined ? propProjects : hookProjects;
+  const submissions = propSubmissions !== undefined ? propSubmissions : hookSubmissions;
+
   const handleSelect = onSelectProject || ((proj) => navigate(`/learner/projects/${proj.id || proj._id}`));
+
+  const handleDelete = onDeleteProject || (async (projectId) => {
+    try {
+      await deleteProjectMutation.mutateAsync(projectId);
+      showToast('Project deleted from database', 'info');
+    } catch (err) {
+      console.error('Failed to delete project:', err);
+      alert(`Delete Error: ${err.message}`);
+    }
+  });
+
+  const handleEdit = onEditProjectPRD || (async (proj) => {
+    openCreateProject(proj);
+    try {
+      const fullProj = await fetchProjectById(proj.id || proj._id);
+      if (fullProj) {
+        openCreateProject(fullProj);
+      }
+    } catch (err) {
+      console.error('Failed to fetch full project details:', err);
+    }
+  });
+
+  const handleViewSubmissions = onViewProjectSubmissions || ((proj) => {
+    openProjectSubmissions(proj);
+  });
 
   const [searchTerm, setSearchTerm] = useState('');
   const [localSelectedCourse, setLocalSelectedCourse] = useState('All');
@@ -67,7 +108,7 @@ export default function LearnerBrowseView({
 
   const title = isAdmin ? 'Evaluation Projects' : 'Browse Projects';
   const description = isAdmin
-    ? 'Create and maintain evaluation benchmarks. Generate and format rich PRD documentation with Gemini AI.'
+    ? 'Create and maintain evaluation projects. Generate and format rich PRD documentation with Gemini AI.'
     : 'Choose a capstone assignment, inspect technical requirements, and submit your GitHub repository for automated AI grading.';
 
   return (
@@ -115,7 +156,7 @@ export default function LearnerBrowseView({
             type="text"
             className="form-input"
             style={{ width: '100%', paddingLeft: '32px', fontSize: '0.84rem' }}
-            placeholder={isAdmin ? 'Search benchmarks...' : 'Search projects by keyword...'}
+            placeholder={isAdmin ? 'Search projects...' : 'Search projects by keyword...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -148,27 +189,25 @@ export default function LearnerBrowseView({
                   </span>
 
                   {isAdmin ? (
-                    onDeleteProject && (
-                      <button
-                        type="button"
-                        title="Delete project"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (window.confirm(`Are you sure you want to delete "${proj.title}"?`)) {
-                            onDeleteProject(proj.id || proj._id);
-                          }
-                        }}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: 'var(--color-text-light)',
-                          cursor: 'pointer',
-                          padding: '2px'
-                        }}
-                      >
-                        <IconTrash size={15} />
-                      </button>
-                    )
+                    <button
+                      type="button"
+                      title="Delete project"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm(`Are you sure you want to delete "${proj.title}"?`)) {
+                          handleDelete(proj.id || proj._id);
+                        }
+                      }}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--color-text-light)',
+                        cursor: 'pointer',
+                        padding: '2px'
+                      }}
+                    >
+                      <IconTrash size={15} />
+                    </button>
                   ) : (
                     latestSubmission && (
                       <span 
@@ -234,28 +273,26 @@ export default function LearnerBrowseView({
                 <div className="project-card-footer">
                   {isAdmin ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      {projSubmissions.length > 0 && onViewProjectSubmissions && (
+                      {projSubmissions.length > 0 && (
                         <button
                           type="button"
                           className="btn btn-secondary btn-sm"
-                          onClick={() => onViewProjectSubmissions(proj)}
+                          onClick={() => handleViewSubmissions(proj)}
                           style={{ fontSize: '0.78rem', padding: '0.35rem 0.65rem' }}
                         >
                           <span>Submissions ({projSubmissions.length})</span>
                         </button>
                       )}
-                      {onEditProjectPRD && (
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                          onClick={() => onEditProjectPRD(proj)}
-                          style={{ fontSize: '0.75rem', padding: '0.3rem 0.55rem' }}
-                          title="Edit project details, deliverables, and evaluation criteria"
-                        >
-                          <IconEdit size={12} />
-                          <span>Edit</span>
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => handleEdit(proj)}
+                        style={{ fontSize: '0.75rem', padding: '0.3rem 0.55rem' }}
+                        title="Edit project details, deliverables, and evaluation criteria"
+                      >
+                        <IconEdit size={12} />
+                        <span>Edit</span>
+                      </button>
                     </div>
                   ) : (
                     <div />
@@ -285,7 +322,7 @@ export default function LearnerBrowseView({
           <p>
             {searchTerm 
               ? `No projects matching "${searchTerm}". Try a different keyword or course filter.`
-              : `There are no evaluation benchmarks currently configured for the ${selectedCourse} course track.`}
+              : `There are no evaluation projects currently configured for the ${selectedCourse} course track.`}
           </p>
         </div>
       )}

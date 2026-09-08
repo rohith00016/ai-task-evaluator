@@ -28,17 +28,16 @@ const projectSchema = new mongoose.Schema(
     ],
     documentation: {
       rawMarkdown: { type: String, default: '' }
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now
     }
   },
   {
-    timestamps: true,
-    strict: false
+    timestamps: true
   }
 );
+
+// Indexes for fast course filtering and sorted catalog lists
+projectSchema.index({ course: 1, createdAt: -1 });
+projectSchema.index({ createdAt: -1 });
 
 // Map _id to id in JSON output for clean frontend compatibility
 projectSchema.set('toJSON', {

@@ -7,6 +7,19 @@ const submissionSchema = new mongoose.Schema(
       required: true,
       index: true
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      index: true
+    },
+    userEmail: {
+      type: String,
+      default: ''
+    },
+    userName: {
+      type: String,
+      default: ''
+    },
     projectTitle: {
       type: String,
       required: true
@@ -65,17 +78,20 @@ const submissionSchema = new mongoose.Schema(
           lineCount: { type: Number },
           size: { type: Number },
           sizeBytes: { type: Number },
-          content: { type: String },
-          rawContent: { type: String, default: '' }
+          content: { type: String }
         }
       ]
     }
   },
   {
-    timestamps: true,
-    strict: false
+    timestamps: true
   }
 );
+
+// Compound indexes for high-speed dashboard, project drawer, and user submission queries
+submissionSchema.index({ userId: 1, submittedAt: -1 });
+submissionSchema.index({ projectId: 1, submittedAt: -1 });
+submissionSchema.index({ submittedAt: -1 });
 
 submissionSchema.set('toJSON', {
   virtuals: true,

@@ -6,12 +6,20 @@ const BASE_URL = '/api';
 
 async function request(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
+  
+  const token = localStorage.getItem('evaluator_token');
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers
-    },
-    ...options
+    ...options,
+    headers
   };
 
   const res = await fetch(url, config);
@@ -30,6 +38,13 @@ async function request(endpoint, options = {}) {
     } catch {
       // ignore
     }
+
+    if (res.status === 401 && !endpoint.startsWith('/auth/login') && !endpoint.startsWith('/auth/register')) {
+      localStorage.removeItem('evaluator_token');
+      localStorage.removeItem('evaluator_user');
+      window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+    }
+
     const err = new Error(errorDetail);
     err.status = res.status;
     err.errorType = errorType;
@@ -178,4 +193,26 @@ export function getProjectPRDMarkdown(project) {
     return project.rawMarkdown;
   }
   return `# ${project.title}\n\n## Problem Statement & Scope\n${project.description || 'No documentation provided.'}`;
+}
+
+/* ===========================
+ * Auth Endpoints
+ * =========================== */
+
+export async function loginUser(credentials) {
+  return request('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify(credentials)
+  });
+}
+
+export async function registerUser(userData) {
+  return request('/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(userData)
+  });
+}
+
+export async function fetchCurrentUser() {
+  return request('/auth/me');
 }

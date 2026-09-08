@@ -13,7 +13,14 @@ export async function getAllSubmissions(req, res) {
       filter.projectId = req.query.projectId;
     }
 
-    const submissions = await Submission.find(filter).sort({ submittedAt: -1 });
+    // Role-based scoping: Learners only see their own submissions
+    if (req.user && req.user.role === 'learner') {
+      filter.userId = req.user.id;
+    }
+
+    const submissions = await Submission.find(filter)
+      .select('-evaluation.scrapedFiles')
+      .sort({ submittedAt: -1 });
     res.json(submissions);
   } catch (err) {
     console.error('[SubmissionController] Error fetching submissions:', err);
@@ -30,6 +37,12 @@ export async function getSubmissionById(req, res) {
     if (!submission) {
       return res.status(404).json({ error: 'Submission not found' });
     }
+
+    // Learners can only access their own submissions
+    if (req.user && req.user.role === 'learner' && submission.userId && submission.userId.toString() !== req.user.id) {
+      return res.status(403).json({ error: 'Access denied to this submission evaluation' });
+    }
+
     res.json(submission);
   } catch (err) {
     console.error('[SubmissionController] Error fetching submission:', err);
@@ -83,8 +96,7 @@ export async function evaluateSubmission(req, res) {
       lineCount: f.lineCount,
       size: f.size,
       sizeBytes: f.size,
-      content: f.content,
-      rawContent: f.rawContent || ''
+      content: f.content
     }));
 
     const status = evaluation.score >= 75 ? 'passed' : evaluation.score >= 50 ? 'review' : 'failed';
@@ -92,6 +104,9 @@ export async function evaluateSubmission(req, res) {
     // 3. Save to MongoDB
     const newSubmission = new Submission({
       projectId: project.id,
+      userId: req.user?.id || null,
+      userEmail: req.user?.email || '',
+      userName: req.user?.name || '',
       projectTitle: project.title,
       repoUrl: repoUrl.trim(),
       branch: branch.trim() || 'main',
@@ -120,6 +135,11 @@ export async function reevaluateSubmission(req, res) {
     const submission = await Submission.findById(req.params.id);
     if (!submission) {
       return res.status(404).json({ error: 'Submission not found' });
+    }
+
+    // Learners can only re-evaluate their own submissions
+    if (req.user && req.user.role === 'learner' && submission.userId && submission.userId.toString() !== req.user.id) {
+      return res.status(403).json({ error: 'Access denied. You can only re-evaluate your own submissions.' });
     }
 
     const project = await Project.findById(submission.projectId);
@@ -151,8 +171,7 @@ export async function reevaluateSubmission(req, res) {
       lineCount: f.lineCount,
       size: f.size,
       sizeBytes: f.size,
-      content: f.content,
-      rawContent: f.rawContent || ''
+      content: f.content
     }));
 
     submission.score = evaluation.score;

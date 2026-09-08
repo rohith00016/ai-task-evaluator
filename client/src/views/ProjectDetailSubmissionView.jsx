@@ -9,6 +9,9 @@ import {
   IconGithub
 } from '../components/Icons';
 
+import { useAuth } from '../context/AuthContext';
+import { useSubmitEvaluationMutation } from '../hooks/useSubmissionsQuery';
+import { useUI, useToast } from '../context/UIContext';
 import MarkdownViewer from '../components/MarkdownViewer';
 import { getProjectPRDMarkdown, fetchProjectById } from '../services/api';
 
@@ -22,6 +25,10 @@ export default function ProjectDetailSubmissionView({
 }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
+  const submitEvaluationMutation = useSubmitEvaluationMutation();
+  const { startEvaluation, setEvalStage, setEvalProgress, stopEvaluation } = useUI();
+  const { showToast } = useToast();
 
   const [fetchedProject, setFetchedProject] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -70,7 +77,7 @@ export default function ProjectDetailSubmissionView({
     if (onBack) {
       onBack();
     } else {
-      navigate('/learner/browse');
+      navigate(isAdmin ? '/admin/projects' : '/learner/browse');
     }
   };
   const handleViewEvaluation = onViewEvaluation || ((sub) => navigate(`/evaluations/${sub.id || sub._id}`));
@@ -98,11 +105,51 @@ export default function ProjectDetailSubmissionView({
         <h3>Project not found</h3>
         <p>The requested evaluation project could not be located.</p>
         <button type="button" className="btn btn-primary btn-sm" onClick={handleBack}>
-          ← Back to Browse Projects
+          ← Back to Projects
         </button>
       </div>
     );
   }
+
+  const handleDefaultSubmit = async (submissionData) => {
+    startEvaluation(submissionData.repoUrl);
+
+    const timer1 = setTimeout(() => {
+      setEvalProgress(45);
+      setEvalStage({ stageIndex: 1, totalStages: 4, message: 'Unpacking source code files & analyzing architecture...', progressPercent: 45 });
+    }, 1000);
+
+    const timer2 = setTimeout(() => {
+      setEvalProgress(75);
+      setEvalStage({ stageIndex: 2, totalStages: 4, message: 'Inspecting code lines with Gemini 2.5 Flash against PRD...', progressPercent: 75 });
+    }, 2200);
+
+    try {
+      const newSubmission = await submitEvaluationMutation.mutateAsync({
+        projectId: project.id || project._id,
+        repoUrl: submissionData.repoUrl,
+        branch: submissionData.branch || 'main',
+        notes: submissionData.notes || ''
+      });
+
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+
+      setEvalProgress(100);
+      setEvalStage({ stageIndex: 3, totalStages: 4, message: 'Evaluation completed! Saved to MongoDB.', progressPercent: 100 });
+      await new Promise((r) => setTimeout(r, 500));
+
+      stopEvaluation();
+      navigate(`/evaluations/${newSubmission.id || newSubmission._id}`);
+      showToast(`Evaluation completed! Overall Score: ${newSubmission.score}/100`);
+    } catch (err) {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      stopEvaluation();
+      showToast(err.message || 'Evaluation failed. Please verify GitHub repo URL.', 'error');
+      throw err;
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -116,8 +163,9 @@ export default function ProjectDetailSubmissionView({
     }
     setIsSubmitting(true);
     try {
-      await onSubmitRepo({
-        projectId: project.id,
+      const submitFn = onSubmitRepo || handleDefaultSubmit;
+      await submitFn({
+        projectId: project.id || project._id,
         projectTitle: project.title,
         repoUrl: repoUrl.trim(),
         branch: 'main',
@@ -457,11 +505,13 @@ export default function ProjectDetailSubmissionView({
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.35rem' }}>
                 <IconGithub size={18} />
                 <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-text-main)' }}>
-                  Submit Repository
+                  {isAdmin ? 'Test Project Evaluation' : 'Submit Repository'}
                 </h3>
               </div>
               <p style={{ fontSize: '0.825rem', color: 'var(--color-text-muted)' }}>
-                Gemini 2.5 Flash will evaluate your repository against the PRD requirements and provide scorecard feedback.
+                {isAdmin 
+                  ? 'Verify this project by evaluating a sample repository against the PRD rules with Gemini 2.5 Flash.' 
+                  : 'Gemini 2.5 Flash will evaluate your repository against the PRD requirements and provide scorecard feedback.'}
               </p>
             </div>
 

@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import apiRouter from './routes/api.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -23,6 +24,9 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// Auth Routes
+app.use('/api/auth', authRoutes);
 
 // API Routes
 app.use('/api', apiRouter);
