@@ -2,8 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import apiRouter from './routes/api.js';
-import authRoutes from './routes/authRoutes.js';
+import apiRoutes from './routes/index.js';
 
 dotenv.config();
 
@@ -25,11 +24,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Auth Routes
-app.use('/api/auth', authRoutes);
-
-// API Routes
-app.use('/api', apiRouter);
+// Modular API Routes (/api/auth, /api/projects, /api/submissions, /api/ai)
+app.use('/api', apiRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {

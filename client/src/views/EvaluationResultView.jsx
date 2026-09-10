@@ -3,21 +3,21 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSubmission, useReevaluateMutation } from '../hooks/useSubmissionsQuery';
 import { useToast } from '../context/UIContext';
-import { 
-  IconCopy, 
-  IconRefreshCw, 
-  IconGithub, 
-  IconSearch, 
-  IconExternalLink, 
+import {
+  IconCopy,
+  IconRefreshCw,
+  IconGithub,
+  IconSearch,
+  IconExternalLink,
   IconCheck,
   IconFileCheck,
   IconCode
 } from '../components/Icons';
 
-export default function EvaluationResultView({ 
-  submission: propSubmission, 
-  onBack, 
-  onReevaluate 
+export default function EvaluationResultView({
+  submission: propSubmission,
+  onBack,
+  onReevaluate
 }) {
   const { submissionId } = useParams();
   const navigate = useNavigate();
@@ -33,10 +33,10 @@ export default function EvaluationResultView({
   const isPropMatching = propSubmission && (propSubmission.id === submissionId || propSubmission._id === submissionId);
 
   // Authenticated React Query hook: loads submission by ID with Bearer token & caching
-  const { 
-    data: querySubmission, 
-    isLoading: isQueryLoading, 
-    error: queryError 
+  const {
+    data: querySubmission,
+    isLoading: isQueryLoading,
+    error: queryError
   } = useSubmission(submissionId, {
     initialData: isPropMatching ? propSubmission : undefined
   });
@@ -141,7 +141,7 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
     setActiveSubTab('code');
   };
 
-  const filteredFiles = scrapedFiles.filter((f) => 
+  const filteredFiles = scrapedFiles.filter((f) =>
     f.path.toLowerCase().includes(fileSearchQuery.toLowerCase().trim())
   );
 
@@ -174,14 +174,14 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
       </div>
 
       {/* Top Level View Subtabs Switcher */}
-      <div 
-        style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '0.5rem', 
-          marginBottom: '1.25rem', 
-          borderBottom: '2px solid var(--color-border)', 
-          paddingBottom: '0.1rem' 
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          marginBottom: '1.25rem',
+          borderBottom: '2px solid var(--color-border)',
+          paddingBottom: '0.1rem'
         }}
       >
         <button
@@ -232,14 +232,14 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
         >
           <IconCode size={16} />
           <span>Scraped Codebase</span>
-          <span 
-            style={{ 
-              fontSize: '0.72rem', 
-              padding: '2px 8px', 
-              borderRadius: 'var(--radius-full)', 
-              backgroundColor: activeSubTab === 'code' ? 'var(--color-surface-subtle)' : '#e2e8f0', 
+          <span
+            style={{
+              fontSize: '0.72rem',
+              padding: '2px 8px',
+              borderRadius: 'var(--radius-full)',
+              backgroundColor: activeSubTab === 'code' ? 'var(--color-surface-subtle)' : '#e2e8f0',
               color: activeSubTab === 'code' ? 'var(--color-primary-hover)' : 'var(--color-text-muted)',
-              fontWeight: 700 
+              fontWeight: 700
             }}
           >
             {scrapedFiles.length} files
@@ -279,16 +279,16 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
 
                 <div>
                   <div style={{ color: 'var(--color-text-muted)', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase' }}>Repository</div>
-                  <a 
-                    href={submission.repoUrl} 
-                    target="_blank" 
+                  <a
+                    href={submission.repoUrl}
+                    target="_blank"
                     rel="noreferrer"
-                    style={{ 
-                      display: 'inline-flex', 
-                      alignItems: 'center', 
-                      gap: '0.35rem', 
-                      color: 'var(--color-primary)', 
-                      textDecoration: 'none', 
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      color: 'var(--color-primary)',
+                      textDecoration: 'none',
                       fontWeight: 600,
                       marginTop: '2px',
                       wordBreak: 'break-all'
@@ -329,7 +329,7 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
                     className="btn btn-secondary btn-sm"
                     style={{ width: '100%', justifyContent: 'center' }}
                   >
-                    💻 View Codebase ({scrapedFiles.length} files) →
+                    View Codebase ({scrapedFiles.length} files) →
                   </button>
                 )}
               </div>
@@ -486,19 +486,19 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
                                 type="button"
                                 onClick={() => handleJumpToFile(location)}
                                 title="Click to view this file in Scraped Codebase"
-                                style={{ 
-                                  display: 'inline-flex', 
-                                  alignItems: 'center', 
-                                  gap: '0.25rem', 
-                                  fontSize: '0.75rem', 
-                                  color: 'var(--color-primary-hover)', 
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '0.25rem',
+                                  fontSize: '0.75rem',
+                                  color: 'var(--color-primary-hover)',
                                   fontFamily: "'Plus Jakarta Sans', sans-serif",
-                                  backgroundColor: 'var(--color-surface-subtle)', 
-                                  border: '1px solid rgba(22, 163, 74, 0.25)', 
-                                  borderRadius: '4px', 
-                                  padding: '2px 7px', 
-                                  cursor: 'pointer', 
-                                  fontWeight: 600 
+                                  backgroundColor: 'var(--color-surface-subtle)',
+                                  border: '1px solid rgba(22, 163, 74, 0.25)',
+                                  borderRadius: '4px',
+                                  padding: '2px 7px',
+                                  cursor: 'pointer',
+                                  fontWeight: 600
                                 }}
                               >
                                 <span>[{location}]</span>
@@ -535,14 +535,14 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
             <div>
               <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-text-main)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span>Scraped Codebase Explorer</span>
-                <span 
-                  style={{ 
-                    fontSize: '0.75rem', 
-                    padding: '2px 8px', 
-                    borderRadius: 'var(--radius-full)', 
-                    backgroundColor: 'var(--color-surface-subtle)', 
-                    color: 'var(--color-primary-hover)', 
-                    fontWeight: 700 
+                <span
+                  style={{
+                    fontSize: '0.75rem',
+                    padding: '2px 8px',
+                    borderRadius: 'var(--radius-full)',
+                    backgroundColor: 'var(--color-surface-subtle)',
+                    color: 'var(--color-primary-hover)',
+                    fontWeight: 700
                   }}
                 >
                   {scrapedFiles.length} files extracted
@@ -649,14 +649,14 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
                           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
                             📄 {file.path}
                           </span>
-                          <span 
-                            style={{ 
-                              fontSize: '0.68rem', 
-                              padding: '1px 5px', 
-                              borderRadius: '4px', 
-                              backgroundColor: isSelected ? 'var(--color-surface-subtle)' : '#e2e8f0', 
-                              color: isSelected ? 'var(--color-primary-hover)' : '#64748b', 
-                              flexShrink: 0 
+                          <span
+                            style={{
+                              fontSize: '0.68rem',
+                              padding: '1px 5px',
+                              borderRadius: '4px',
+                              backgroundColor: isSelected ? 'var(--color-surface-subtle)' : '#e2e8f0',
+                              color: isSelected ? 'var(--color-primary-hover)' : '#64748b',
+                              flexShrink: 0
                             }}
                           >
                             {file.lineCount}L
@@ -676,13 +676,13 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
               <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#0f172a', overflow: 'hidden' }}>
                 {activeFile ? (
                   <>
-                    <div 
-                      style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'space-between', 
-                        padding: '0.65rem 1rem', 
-                        backgroundColor: '#1e293b', 
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '0.65rem 1rem',
+                        backgroundColor: '#1e293b',
                         borderBottom: '1px solid #334155',
                         flexWrap: 'wrap',
                         gap: '0.5rem'
@@ -705,11 +705,11 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
                           setCopiedFile(true);
                           setTimeout(() => setCopiedFile(false), 1800);
                         }}
-                        style={{ 
-                          fontSize: '0.72rem', 
-                          padding: '3px 10px', 
-                          backgroundColor: '#334155', 
-                          color: '#f8fafc', 
+                        style={{
+                          fontSize: '0.72rem',
+                          padding: '3px 10px',
+                          backgroundColor: '#334155',
+                          color: '#f8fafc',
                           border: 'none',
                           display: 'inline-flex',
                           alignItems: 'center',
@@ -730,16 +730,16 @@ ${evaluation.issues?.map((i) => `• ${typeof i === 'string' ? i : `${i.title} (
                       </button>
                     </div>
 
-                    <pre 
-                      style={{ 
-                        flex: 1, 
-                        margin: 0, 
-                        padding: '1.25rem', 
-                        overflowY: 'auto', 
-                        maxHeight: '560px', 
-                        color: '#f1f5f9', 
-                        fontSize: '0.82rem', 
-                        fontFamily: "'Plus Jakarta Sans', monospace", 
+                    <pre
+                      style={{
+                        flex: 1,
+                        margin: 0,
+                        padding: '1.25rem',
+                        overflowY: 'auto',
+                        maxHeight: '560px',
+                        color: '#f1f5f9',
+                        fontSize: '0.82rem',
+                        fontFamily: "'Plus Jakarta Sans', monospace",
                         lineHeight: 1.65,
                         backgroundColor: '#0f172a'
                       }}
