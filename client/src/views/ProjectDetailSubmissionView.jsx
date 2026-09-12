@@ -593,10 +593,10 @@ export default function ProjectDetailSubmissionView({
           <div
             className="modal-content"
             onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: '560px', width: '100%', overflow: 'hidden' }}
+            style={{ maxWidth: '560px', width: '100%', maxHeight: 'calc(100vh - 3rem)', display: 'flex', flexDirection: 'column' }}
           >
             {/* Modal Header */}
-            <div className="modal-header" style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--color-border)' }}>
+            <div className="modal-header" style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--color-border)', flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <div
                   style={{
@@ -634,8 +634,8 @@ export default function ProjectDetailSubmissionView({
             </div>
 
             {/* Modal Body / Form */}
-            <form onSubmit={handleSubmit}>
-              <div className="modal-body" style={{ padding: '1.5rem' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflow: 'hidden', margin: 0 }}>
+              <div className="modal-body" style={{ padding: '1.5rem', overflowY: 'auto', flex: 1, minHeight: 0 }}>
                 <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
                   {isAdmin
                     ? 'Verify this project by evaluating a sample repository against the PRD rules with Gemini 2.5 Flash.'
@@ -737,7 +737,7 @@ export default function ProjectDetailSubmissionView({
               </div>
 
               {/* Modal Footer */}
-              <div className="modal-footer">
+              <div className="modal-footer" style={{ flexShrink: 0 }}>
                 <button
                   type="button"
                   className="btn btn-secondary"
